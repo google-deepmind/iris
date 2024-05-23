@@ -20,15 +20,17 @@ from typing import Dict, Optional, Sequence
 from iris import normalizer
 import numpy as np
 
+FloatLike = int | float | np.float32 | np.float64
+
 
 @dataclasses.dataclass()
 class EvaluationResult():
   """A class for holding blackbox function evaluation result."""
   params_evaluated: np.ndarray
-  value: np.float64
+  value: FloatLike
   obs_norm_buffer_data: Optional[Dict[str, np.ndarray]] = None
   metadata: Optional[str] = None
-  metrics: Optional[Dict[str, np.float64]] = None
+  metrics: Optional[Dict[str, FloatLike]] = None
 
 
 def merge_eval_results(results: Sequence[EvaluationResult]) -> EvaluationResult:

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for gym_space_utils."""
-
 import gym
 from iris.policies import gym_space_utils
 import numpy as np

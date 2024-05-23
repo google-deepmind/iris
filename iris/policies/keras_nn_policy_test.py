@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for keras_policy."""
-
 from gym import spaces
 from iris.policies import keras_nn_policy
 from iris.policies import nn_policy

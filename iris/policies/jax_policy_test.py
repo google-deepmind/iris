@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for keras_policy."""
-
 from flax import linen as nn
 from gym import spaces
 from iris.policies import jax_policy

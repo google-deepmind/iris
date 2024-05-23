@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for implicit_policy."""
-
 from gym import spaces
 from gym.spaces import utils
 from iris.policies import implicit_policy

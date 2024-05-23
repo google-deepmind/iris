@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for spatial_softmax."""
-
 from iris.policies import spatial_softmax
 import tensorflow as tf2
 import tensorflow.compat.v1 as tf

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for normalizer."""
-
 import gym
 from iris import normalizer
 import numpy as np
