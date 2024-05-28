@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Policy network on learned predictive information representations."""
+
 from typing import Dict, List, Optional, Sequence, Union
 
 import gym
@@ -27,8 +28,9 @@ import tensorflow as tf
 class KerasPIPolicy(keras_policy.KerasPolicy):
   """Policy network on learned predictive information representations."""
 
-  def __init__(self, ob_space: gym.Space, ac_space: gym.Space,
-               **kwargs) -> None:
+  def __init__(
+      self, ob_space: gym.Space, ac_space: gym.Space, **kwargs
+  ) -> None:
     """Initializes a keras CNN policy. See the base class for more details."""
     super().__init__(ob_space=ob_space, ac_space=ac_space, **kwargs)
     # Build the encoder h that outputs [hidden_state, hidden_state_vision_only]
@@ -52,11 +54,14 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
   def _create_vision_input_layers(self):
     vision_input_layers = []
     for image_label in self._image_input_labels:
-      image_size = self._ob_space[image_label].shape
-      vision_input_layers.append(tf.keras.layers.Input(
-          batch_input_shape=(1, image_size[0], image_size[1], image_size[2]),
-          dtype="float",
-          name="vision_input" + image_label))
+      vision_input_layers.append(
+          tf.keras.layers.Input(
+              shape=self._ob_space[image_label].shape,
+              batch_size=1,
+              dtype="float32",
+              name="vision_input" + image_label,
+          )
+      )
     return vision_input_layers
 
   def _create_other_input_layer(self):
@@ -70,9 +75,11 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     self._other_ob_dim = utils.flatdim(self._other_ob_space)
     if self._other_ob_dim > 0:
       return tf.keras.layers.Input(
-          batch_input_shape=(1, self._other_ob_dim),
-          dtype="float",
-          name="other_input")
+          shape=(self._other_ob_dim,),
+          batch_size=1,
+          dtype="float32",
+          name="other_input",
+      )
     return None
 
   def _create_vision_processing_layers(
@@ -85,7 +92,8 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
       pool_strides: Optional[Sequence[int]] = None,
       final_vision_activation: str = "relu",
       use_spatial_softmax: bool = False,
-      **kwargs) -> tf.keras.layers.Layer:
+      **kwargs
+  ) -> tf.keras.layers.Layer:
     """Create keras layers for CNN image processing.
 
     Args:
@@ -113,17 +121,18 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
       pool_strides = [None] * len(conv_filter_sizes)
 
     for filter_size, kernel_size, pool_size, pool_stride in zip(
-        conv_filter_sizes, conv_kernel_sizes, pool_sizes, pool_strides):
+        conv_filter_sizes, conv_kernel_sizes, pool_sizes, pool_strides
+    ):
       x = tf.keras.layers.Conv2D(
           filter_size,
           kernel_size=kernel_size,
           padding="valid",
-          activation=final_vision_activation)(
-              x)
+          activation=final_vision_activation,
+      )(x)
       if pool_size is not None:
-        x = tf.keras.layers.MaxPool2D(
-            pool_size=pool_size, strides=pool_stride)(
-                x)
+        x = tf.keras.layers.MaxPool2D(pool_size=pool_size, strides=pool_stride)(
+            x
+        )
 
     # Flattening or spatial softmax on image feature map.
     if use_spatial_softmax:
@@ -132,32 +141,36 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
       x = tf.keras.layers.Flatten()(x)
 
     # Encoding image into a feature vector.
-    return tf.keras.layers.Dense(image_feature_length,
-                                 activation=final_vision_activation)(x)
+    return tf.keras.layers.Dense(
+        image_feature_length, activation=final_vision_activation
+    )(x)
 
-  def _build_model(self,  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
-                   state_dim: int,
-                   fc_layer_sizes: Sequence[int],
-                   **kwargs) -> None:
+  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def _build_model(
+      self, state_dim: int, fc_layer_sizes: Sequence[int], **kwargs
+  ) -> None:
     # hidden state input
     state_input = tf.keras.layers.Input(
-        batch_input_shape=(1, state_dim),
-        dtype="float",
-        name="s_input")
+        shape=(state_dim,), batch_size=1, dtype="float32", name="s_input"
+    )
 
     # policy
     x = state_input
     for fc_layer_size in fc_layer_sizes:
       x = tf.keras.layers.Dense(fc_layer_size, activation="tanh")(x)
     action_output = tf.keras.layers.Dense(self._ac_dim, activation="tanh")(x)
-    self.model = tf.keras.models.Model(inputs=state_input,
-                                       outputs=[action_output])
+    self.model = tf.keras.models.Model(
+        inputs=state_input, outputs=[action_output]
+    )
+
+  # pytype: enable=signature-mismatch  # overriding-parameter-count-checks
 
   def build_h(
       self,
       h_fc_layer_sizes: Sequence[int],
       image_input_label: Optional[Union[Sequence[str], str]] = None,
-      **kwargs):
+      **kwargs
+  ):
     # image_input_label: Label of image input in observation dictionary.
     if image_input_label is None:
       self._image_input_labels = []
@@ -171,9 +184,11 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     vision_outputs = []
     for vision_input in inputs:
       vision_outputs.append(
-          self._create_vision_processing_layers(x=vision_input, **kwargs))
-    vision_output = tf.keras.layers.concatenate(
-        vision_outputs) if vision_outputs else None
+          self._create_vision_processing_layers(x=vision_input, **kwargs)
+      )
+    vision_output = (
+        tf.keras.layers.concatenate(vision_outputs) if vision_outputs else None
+    )
 
     # Add other sensor observations.
     other_input = self._create_other_input_layer()
@@ -193,15 +208,16 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     outputs = [x, vision_output] if vision_output is not None else x
     self.h_model = tf.keras.models.Model(inputs=inputs, outputs=outputs)
 
-  def build_f(self,
-              state_dim: int,
-              f_fc_layer_sizes: Sequence[int],
-              num_supports: int = 51,
-              **kwargs):
+  def build_f(
+      self,
+      state_dim: int,
+      f_fc_layer_sizes: Sequence[int],
+      num_supports: int = 51,
+      **kwargs
+  ):
     state_input = tf.keras.layers.Input(
-        batch_input_shape=(1, state_dim),
-        dtype="float",
-        name="s_input")
+        shape=(state_dim,), batch_size=1, dtype="float32", name="s_input"
+    )
     x = state_input
     for f_fc_layer_size in f_fc_layer_sizes:
       x = tf.keras.layers.Dense(f_fc_layer_size, activation="tanh")(x)
@@ -209,57 +225,52 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     v = tf.keras.layers.Dense(num_supports)(x)
     self.f_model = tf.keras.models.Model(inputs=state_input, outputs=[p, v])
 
-  def build_g(self,
-              state_dim: int,
-              g_fc_layer_sizes: Sequence[int],
-              **kwargs):
+  def build_g(self, state_dim: int, g_fc_layer_sizes: Sequence[int], **kwargs):
     state_input = tf.keras.layers.Input(
-        batch_input_shape=(1, state_dim),
-        dtype="float",
-        name="s_input")
+        shape=(state_dim,), batch_size=1, dtype="float32", name="s_input"
+    )
     action_input = tf.keras.layers.Input(
-        batch_input_shape=(1, self._ac_dim),
-        dtype="float",
-        name="action_input")
+        shape=(self._ac_dim,),
+        batch_size=1,
+        dtype="float32",
+        name="action_input",
+    )
 
     x = tf.keras.layers.concatenate([state_input, action_input])
     for g_fc_layer_size in g_fc_layer_sizes:
       x = tf.keras.layers.Dense(g_fc_layer_size, activation="tanh")(x)
     u_next = tf.keras.layers.Dense(1)(x)
     s_next = tf.keras.layers.Dense(state_dim, activation="tanh")(x)
-    self.g_model = tf.keras.models.Model(inputs=[state_input, action_input],
-                                         outputs=[u_next, s_next])
+    self.g_model = tf.keras.models.Model(
+        inputs=[state_input, action_input], outputs=[u_next, s_next]
+    )
 
-  def build_px(self,
-               state_dim: int,
-               **kwargs):
+  def build_px(self, state_dim: int, **kwargs):
     state_input = tf.keras.layers.Input(
-        batch_input_shape=(1, state_dim),
-        dtype="float",
-        name="s_input")
+        shape=(state_dim,), batch_size=1, dtype="float32", name="s_input"
+    )
 
     x = state_input
     x = tf.keras.layers.Dense(64, activation="tanh")(x)
     z = tf.keras.layers.Dense(state_dim)(x)
     self.px_model = tf.keras.models.Model(inputs=state_input, outputs=z)
 
-  def build_py(self,
-               state_dim: int,
-               image_feature_length: int,
-               **kwargs):
+  def build_py(self, state_dim: int, image_feature_length: int, **kwargs):
     state_input = tf.keras.layers.Input(
-        batch_input_shape=(
-            1, image_feature_length * len(self._image_input_labels)),
-        dtype="float",
-        name="s_input")
+        shape=(image_feature_length * len(self._image_input_labels),),
+        batch_size=1,
+        dtype="float32",
+        name="s_input",
+    )
 
     x = state_input
     x = tf.keras.layers.Dense(64, activation="tanh")(x)
     z = tf.keras.layers.Dense(state_dim)(x)
     self.py_model = tf.keras.models.Model(inputs=state_input, outputs=z)
 
-  def act(self, ob: Union[np.ndarray, Dict[str, np.ndarray]]
-          ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+  def act(
+      self, ob: Union[np.ndarray, Dict[str, np.ndarray]]
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     """Maps the observation to action.
 
     Args:
@@ -294,8 +305,9 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     actions = utils.unflatten(self._ac_space, actions)
     return actions
 
-  def rollout(self, ob: Union[np.ndarray, Dict[str, np.ndarray]],
-              rollout_length: int) -> np.ndarray:
+  def rollout(
+      self, ob: Union[np.ndarray, Dict[str, np.ndarray]], rollout_length: int
+  ) -> np.ndarray:
     # Separate vision input and other observations.
     inputs = []
     for image_label in self._image_input_labels:
@@ -315,7 +327,7 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
 
     # Run model.
     s, _ = self.h_model(inputs)
-    reward = 0.
+    reward = 0.0
     for _ in range(rollout_length):
       action = self.model(s)
       u_next, s = self.g_model([s, action])

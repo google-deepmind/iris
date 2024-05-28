@@ -22,11 +22,14 @@ import tensorflow as tf
 class KerasNNPolicy(keras_policy.KerasPolicy):
   """Policy class that computes action by running feed fwd neural network."""
 
-  def _build_model(self,  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
-                   hidden_layer_sizes: Sequence[int],
-                   activation: str = "tanh",
-                   use_bias: bool = False,
-                   kernel_initializer: str = "zeros") -> None:
+  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def _build_model(
+      self,
+      hidden_layer_sizes: Sequence[int],
+      activation: str = "tanh",
+      use_bias: bool = False,
+      kernel_initializer: str = "zeros",
+  ) -> None:
     """Constructs a keras feed forward neural network model.
 
     Args:
@@ -37,20 +40,24 @@ class KerasNNPolicy(keras_policy.KerasPolicy):
     """
     # Creates model.
     input_layer = tf.keras.layers.Input(
-        batch_input_shape=(1, self._ob_dim), dtype="float", name="input")
+        shape=(self._ob_dim,), batch_size=1, dtype="float32", name="input"
+    )
     x = input_layer
     for layer_size in hidden_layer_sizes:
       x = tf.keras.layers.Dense(
           layer_size,
           activation=activation,
           use_bias=use_bias,
-          kernel_initializer=kernel_initializer)(
-              x)
+          kernel_initializer=kernel_initializer,
+      )(x)
     output_layer = tf.keras.layers.Dense(
         self._ac_dim,
         activation=activation,
         use_bias=use_bias,
-        kernel_initializer=kernel_initializer)(
-            x)
-    self.model = tf.keras.models.Model(inputs=[input_layer],
-                                       outputs=[output_layer])
+        kernel_initializer=kernel_initializer,
+    )(x)
+    self.model = tf.keras.models.Model(
+        inputs=[input_layer], outputs=[output_layer]
+    )
+
+  # pytype: enable=signature-mismatch  # overriding-parameter-count-checks

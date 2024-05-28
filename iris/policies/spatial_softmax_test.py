@@ -12,17 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# pytype: disable=attribute-error
 from iris.policies import spatial_softmax
 import tensorflow as tf2
 import tensorflow.compat.v1 as tf
+from absl.testing import absltest
 
-
-test_utils = tf2._keras_internal.testing_infra.test_utils  # pylint:disable=protected-access
+# TODO: Remove this try/except once import is fixed.
+try:
+  test_utils = tf2._keras_internal.testing_infra.test_utils  # pylint:disable=protected-access
+except AttributeError:
+  test_utils = None
 
 _INPUT_SHAPE = (16, 32, 32, 128)
 _TEMPERATURE = 2.5
 
 
+@absltest.skipIf(test_utils is None, 'test_utils not available')
 class SpatialSoftmaxTest(tf.test.TestCase):
 
   def test_with_default(self):

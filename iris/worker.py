@@ -31,7 +31,6 @@ from iris.policies import base_policy
 from iris.policies import nas_policy
 import numpy as np
 import pyglove as pg
-import qj_global  # pylint: disable=unused-import
 import reverb
 from tf_agents.environments import gym_wrapper
 from tf_agents.google.utils import mp4_video_recorder

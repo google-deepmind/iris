@@ -14,7 +14,7 @@ jobs:
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: ['3.10']
         os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
@@ -33,6 +33,6 @@ jobs:
       - name: Print installed dependencies
         run: |
           pip freeze
-      - name: Test with pytest # (TODO: Automate Iris installation)
+      - name: Test with pytest  # TODO(team): Fix tensorflow version conflict.
         run: |
           # pytest -n auto iris

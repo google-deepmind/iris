@@ -13,6 +13,7 @@
 # limitations under the License.
 
 """Setup for pip package."""
+
 import setuptools
 
 
@@ -34,10 +35,11 @@ def _parse_requirements(requirements_txt_path: str) -> list[str]:
 
 setuptools.setup(
     name='google-iris',
-    version='1.0',
+    version='0.0.1.alpha',
     description='Iris',
     author='Iris Team',
     author_email='jaindeepali@google.com',
     install_requires=_parse_requirements('requirements.txt'),
     packages=setuptools.find_packages(),
-    )
+    python_requires='>=3.10',
+)

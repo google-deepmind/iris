@@ -64,11 +64,13 @@ class Toeplitz(tf.keras.layers.Layer):
   before multiplication.
   """
 
-  def __init__(self,
-               units: int = 32,
-               activation: str = "tanh",
-               use_bias: bool = True,
-               kernel_initializer: str = "random_normal") -> None:
+  def __init__(
+      self,
+      units: int = 32,
+      activation: str = "tanh",
+      use_bias: bool = True,
+      kernel_initializer: str = "random_normal",
+  ) -> None:
     super().__init__()
     self._units = units
     self._activation = tf.keras.activations.get(activation)
@@ -77,21 +79,23 @@ class Toeplitz(tf.keras.layers.Layer):
 
   def build(self, input_shape: Sequence[int]) -> None:
     self._cross_weight = self.add_weight(
-        shape=(1,),
-        initializer=self._kernel_initializer,
-        trainable=True)
+        shape=(1,), initializer=self._kernel_initializer, trainable=True
+    )
     self._col = self.add_weight(
         shape=(input_shape[-1] - 1,),
         initializer=self._kernel_initializer,
-        trainable=True)
+        trainable=True,
+    )
     self._row = self.add_weight(
         shape=(self._units - 1,),
         initializer=self._kernel_initializer,
-        trainable=True)
+        trainable=True,
+    )
 
     if self._use_bias:
       self._b = self.add_weight(
-          shape=(self._units,), initializer="random_normal", trainable=True)
+          shape=(self._units,), initializer="random_normal", trainable=True
+      )
     else:
       self._b = 0
 
@@ -99,16 +103,22 @@ class Toeplitz(tf.keras.layers.Layer):
     input_shape = inputs.shape
     toeplitz_row_size = max(input_shape[-1], self._units)
     extended_col = tf.concat(
-        [self._cross_weight,
-         self._col,
-         tf.zeros(toeplitz_row_size - input_shape[-1])], 0)
+        [
+            self._cross_weight,
+            self._col,
+            tf.zeros(toeplitz_row_size - input_shape[-1]),
+        ],
+        0,
+    )
     extended_row = tf.concat(
-        [self._cross_weight,
-         self._row,
-         tf.zeros(toeplitz_row_size - self._units)], 0)
-    weight_matrix = tf.linalg.LinearOperatorToeplitz(
-        extended_col,
-        extended_row)
+        [
+            self._cross_weight,
+            self._row,
+            tf.zeros(toeplitz_row_size - self._units),
+        ],
+        0,
+    )
+    weight_matrix = tf.linalg.LinearOperatorToeplitz(extended_col, extended_row)
     # TODO: Move Toeplitz weight matrix creation without zero
     # padding to the build function when TF supports rectangular Toeplitz
     # matrices
@@ -118,20 +128,21 @@ class Toeplitz(tf.keras.layers.Layer):
     extended_outputs = tf.matmul(extended_inputs, weight_matrix)
     output_shape = input_shape.as_list()
     output_shape[-1] = self._units
-    outputs = tf.slice(extended_outputs,
-                       [0] * len(output_shape),
-                       output_shape)
+    outputs = tf.slice(extended_outputs, [0] * len(output_shape), output_shape)
     return self._activation(outputs + self._b)
 
 
 class KerasToeplitzPolicy(keras_policy.KerasPolicy):
   """Policy class that computes action by running toeplitz network."""
 
-  def _build_model(self,  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
-                   hidden_layer_sizes: Sequence[int],
-                   activation: str = "tanh",
-                   use_bias: bool = False,
-                   kernel_initializer: str = "zeros") -> None:
+  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def _build_model(
+      self,
+      hidden_layer_sizes: Sequence[int],
+      activation: str = "tanh",
+      use_bias: bool = False,
+      kernel_initializer: str = "zeros",
+  ) -> None:
     """Constructs a keras feed forward neural network model.
 
     Args:
@@ -142,20 +153,24 @@ class KerasToeplitzPolicy(keras_policy.KerasPolicy):
     """
     # Creates model.
     input_layer = tf.keras.layers.Input(
-        batch_input_shape=(1, self._ob_dim), dtype="float", name="input")
+        shape=(self._ob_dim,), batch_size=1, dtype="float32", name="input"
+    )
     x = input_layer
     for layer_size in hidden_layer_sizes:
       x = Toeplitz(
           layer_size,
           activation=activation,
           use_bias=use_bias,
-          kernel_initializer=kernel_initializer)(
-              x)
+          kernel_initializer=kernel_initializer,
+      )(x)
     output_layer = Toeplitz(
         self._ac_dim,
         activation=activation,
         use_bias=use_bias,
-        kernel_initializer=kernel_initializer)(
-            x)
-    self.model = tf.keras.models.Model(inputs=[input_layer],
-                                       outputs=[output_layer])
+        kernel_initializer=kernel_initializer,
+    )(x)
+    self.model = tf.keras.models.Model(
+        inputs=[input_layer], outputs=[output_layer]
+    )
+
+  # pytype: enable=signature-mismatch  # overriding-parameter-count-checks
