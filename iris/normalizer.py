@@ -52,6 +52,11 @@ class Buffer(abc.ABC):
   def data(self) -> Dict[str, Any]:
     """Returns copy of current data in buffer."""
 
+  @data.setter
+  @abc.abstractmethod
+  def data(self, new_data: Dict[str, Any]) -> None:
+    """Sets data of buffer."""
+
   @property
   @abc.abstractmethod
   def shape(self) -> Sequence[int]:
@@ -83,6 +88,10 @@ class NoOpBuffer(Buffer):
   @property
   def data(self) -> Dict[str, Any]:
     return {}
+
+  @data.setter
+  def data(self, new_data: Dict[str, Any]) -> None:
+    pass
 
   @property
   def shape(self) -> Sequence[int]:
@@ -159,6 +168,10 @@ class MeanStdBuffer(Buffer):
   @property
   def data(self) -> Dict[str, Any]:
     return copy.deepcopy(self._data)
+
+  @data.setter
+  def data(self, new_data: Dict[str, Any]) -> None:
+    self._data = copy.deepcopy(new_data)
 
   @property
   def shape(self) -> Sequence[int]:

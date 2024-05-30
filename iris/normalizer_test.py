@@ -18,6 +18,20 @@ import numpy as np
 from absl.testing import absltest
 
 
+class BufferTest(absltest.TestCase):
+
+  def test_meanstdbuffer(self):
+    buffer = normalizer.MeanStdBuffer((1))
+    buffer.push(np.asarray(10.0))
+    buffer.push(np.asarray(11.0))
+
+    new_buffer = normalizer.MeanStdBuffer((1))
+    new_buffer.data = buffer.data
+
+    self.assertEqual(new_buffer._std, buffer._std)
+    self.assertEqual(new_buffer._data['n'], buffer._data['n'])
+
+
 class NormalizerTest(absltest.TestCase):
 
   def test_no_normalizer(self):
