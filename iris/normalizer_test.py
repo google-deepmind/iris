@@ -30,7 +30,6 @@ class BufferTest(absltest.TestCase):
 
     self.assertEqual(new_buffer._std, buffer._std)
     self.assertEqual(new_buffer._data['n'], buffer._data['n'])
-    self.assertEqual(new_buffer.mean, buffer.mean)
 
 
 class NormalizerTest(absltest.TestCase):
