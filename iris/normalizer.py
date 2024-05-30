@@ -15,8 +15,8 @@
 """Normalizer class for observation and action normalization in RL."""
 
 import abc
+import copy
 from typing import Any, Dict, Optional, Sequence, Union
-
 from absl import logging
 import gin
 import gym
@@ -32,53 +32,79 @@ N = "n"
 UNNORM_VAR = "unnorm_var"
 
 
-@gin.configurable
 class Buffer(abc.ABC):
   """Buffer class for collecting online statistics from data."""
 
-  def __init__(self, shape: Sequence[int] = (0,)) -> None:
-    self._shape = shape
-    self._data = {}
-    self.reset()
+  @abc.abstractmethod
+  def reset(self) -> None:
+    """Reset buffer."""
 
+  @abc.abstractmethod
   def push(self, x: np.ndarray) -> None:
     """Push new data point."""
 
-  def merge(self, data: Dict[str, np.ndarray]) -> None:
+  @abc.abstractmethod
+  def merge(self, data: Dict[str, Any]) -> None:
     """Merge data from another buffer."""
 
-  def reset(self) -> None:
-    self._data[N] = 0
+  @property
+  @abc.abstractmethod
+  def data(self) -> Dict[str, Any]:
+    """Returns copy of current data in buffer."""
 
   @property
+  @abc.abstractmethod
   def shape(self) -> Sequence[int]:
-    return self._shape
+    """Shape of data point."""
+
+  @property
+  @abc.abstractmethod
+  def state(self) -> Dict[str, Any]:
+    """Returns copy of current state of buffer."""
+
+  @state.setter
+  @abc.abstractmethod
+  def state(self, new_state: Dict[str, Any]) -> None:
+    """Sets state of buffer."""
+
+
+class NoOpBuffer(Buffer):
+  """No-op buffer."""
+
+  def reset(self) -> None:
+    pass
+
+  def push(self, x: np.ndarray) -> None:
+    pass
+
+  def merge(self, data: Dict[str, Any]) -> None:
+    pass
 
   @property
   def data(self) -> Dict[str, Any]:
-    return self._data.copy()
-
-  @data.setter
-  def data(self, data: Dict[str, Any]) -> None:
-    self._data = data.copy()
+    return {}
 
   @property
-  def n(self) -> Any:
-    return self._data[N]
+  def shape(self) -> Sequence[int]:
+    return ()
 
   @property
   def state(self) -> Dict[str, Any]:
-    state = {N: self.n}
-    return state
+    return {}
 
   @state.setter
   def state(self, new_state: Dict[str, Any]) -> None:
-    self._data[N] = new_state[N]
+    pass
 
 
 @gin.configurable
 class MeanStdBuffer(Buffer):
   """Collect stats for calculating mean and std online."""
+
+  def __init__(self, shape: Sequence[int] = (0,)) -> None:
+    self._shape = shape
+    self._data = {}
+    self.reset()
 
   def reset(self) -> None:
     self._data[N] = 0
@@ -95,7 +121,7 @@ class MeanStdBuffer(Buffer):
       self._data[MEAN] += delta / self._data[N]
       self._data[UNNORM_VAR] += delta * delta * n1 / self._data[N]
 
-  def merge(self, data: Dict[str, np.ndarray]) -> None:
+  def merge(self, data: Dict[str, Any]) -> None:
     """Merge data from another buffer."""
     n1 = self._data[N]
     n2 = data[N]
@@ -131,50 +157,55 @@ class MeanStdBuffer(Buffer):
     self._data[UNNORM_VAR] = unnorm_var
 
   @property
-  def mean(self) -> np.ndarray:
-    return self._data[MEAN]
+  def data(self) -> Dict[str, Any]:
+    return copy.deepcopy(self._data)
 
   @property
-  def unnorm_var(self) -> np.ndarray:
-    return self._data[UNNORM_VAR]
-
-  @property
-  def var(self) -> np.ndarray:
-    return (
-        self.unnorm_var / (self.n - 1)
-        if self.n > 1
-        else np.ones_like(self.mean)
-    )
-
-  @property
-  def std(self) -> np.ndarray:
-    # asarray is needed for boolean indexing to work when shape = (1)
-    std = np.asarray(np.sqrt(self.var))
-    std[std < 1e-7] = float("inf")
-    return std
+  def shape(self) -> Sequence[int]:
+    return self._shape
 
   @property
   def state(self) -> Dict[str, Any]:
-    state = {MEAN: self.mean, STD: self.std, N: self.n}
-    return state
+    return {MEAN: self._data[MEAN], STD: self._std, N: self._data[N]}
 
   @state.setter
   def state(self, new_state: Dict[str, Any]) -> None:
-    self._data[MEAN] = new_state[MEAN].copy()
+    new_state = copy.deepcopy(new_state)
+    self._data[MEAN] = new_state[MEAN]
     self._data[N] = new_state[N]
-    std = new_state[STD].copy()
+
+    std = new_state[STD]
     std[std == float("inf")] = 0
     var = np.square(std)
-    unnorm_var = var * (self.n - 1) if self.n > 1 else np.zeros_like(self.mean)
+    unnorm_var = (
+        var * (self._data[N] - 1)
+        if self._data[N] > 1
+        else np.zeros_like(self._data[MEAN])
+    )
     self._data[UNNORM_VAR] = unnorm_var
+
+  @property
+  def _var(self) -> np.ndarray:
+    return (
+        self._data[UNNORM_VAR] / (self._data[N] - 1)
+        if self._data[N] > 1
+        else np.ones_like(self._data[MEAN])
+    )
+
+  @property
+  def _std(self) -> np.ndarray:
+    # asarray is needed for boolean indexing to work when shape = (1)
+    std = np.asarray(np.sqrt(self._var))
+    std[std < 1e-7] = float("inf")
+    return std
 
 
 class Normalizer(abc.ABC):
   """Base Normalizer class."""
 
-  def __init__(self,
-               space: gym.Space,
-               ignored_keys: Optional[Sequence[str]] = None) -> None:
+  def __init__(
+      self, space: gym.Space, ignored_keys: Optional[Sequence[str]] = None
+  ) -> None:
     """Initializes Normalizer.
 
     Args:
@@ -185,9 +216,7 @@ class Normalizer(abc.ABC):
     """
     self._space = space
     self._space_ignored = None
-    self._ignored_keys = ignored_keys
-    if ignored_keys is None:
-      self._ignored_keys = []
+    self._ignored_keys = ignored_keys or []
     if self._ignored_keys and isinstance(space, spaces.Dict):
       self._space = {}
       self._space_ignored = {}
@@ -200,15 +229,23 @@ class Normalizer(abc.ABC):
       self._space_ignored = spaces.Dict(self._space_ignored)
     self._flat_space = utils.flatten_space(self._space)
     self._state = {}
-    self._buffer = Buffer((0,))
 
   @property
+  @abc.abstractmethod
   def buffer(self) -> Buffer:
     """Buffer for collecting normalization statistics."""
-    return self._buffer
+
+  @abc.abstractmethod
+  def __call__(
+      self,
+      value: Union[np.ndarray, Dict[str, np.ndarray]],
+      update_buffer: bool = True,
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+    """Apply normalization."""
 
   def _filter_ignored_input(
-      self, input_dict: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+      self, input_dict: Dict[str, np.ndarray]
+  ) -> Dict[str, np.ndarray]:
     ignored_dict = {}
     for key in self._ignored_keys:
       ignored_dict[key] = input_dict[key]
@@ -216,20 +253,13 @@ class Normalizer(abc.ABC):
     return ignored_dict
 
   def _add_ignored_input(
-      self, input_dict: Dict[str, np.ndarray],
-      ignored_input: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+      self,
+      input_dict: Dict[str, np.ndarray],
+      ignored_input: Dict[str, np.ndarray],
+  ) -> Dict[str, np.ndarray]:
     if isinstance(input_dict, dict):
       input_dict.update(ignored_input)
     return input_dict
-
-  @abc.abstractmethod
-  def __call__(
-      self,
-      value: Union[np.ndarray, Dict[str, np.ndarray]],
-      update_buffer: bool = True) -> Union[np.ndarray, Dict[str, np.ndarray]]:
-    """Apply normalization."""
-    raise NotImplementedError(
-        "Should be implemented in derived classes for specific filters.")
 
   @property
   def state(self) -> Dict[str, np.ndarray]:
@@ -244,10 +274,15 @@ class Normalizer(abc.ABC):
 class NoNormalizer(Normalizer):
   """No Normalization applied to input."""
 
+  @property
+  def buffer(self) -> Buffer:
+    return NoOpBuffer()
+
   def __call__(
       self,
       value: Union[np.ndarray, Dict[str, np.ndarray]],
-      update_buffer: bool = True) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+      update_buffer: bool = True,
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     del update_buffer
     return value
 
@@ -256,19 +291,24 @@ class NoNormalizer(Normalizer):
 class ActionRangeDenormalizer(Normalizer):
   """Actions mapped to given range from [-1, 1]."""
 
-  def __init__(self,
-               space: gym.Space,
-               ignored_keys: Optional[Sequence[str]] = None) -> None:
+  def __init__(
+      self, space: gym.Space, ignored_keys: Optional[Sequence[str]] = None
+  ) -> None:
     super().__init__(space, ignored_keys)
     low = self._flat_space.low
     high = self._flat_space.high
     self._state["mid"] = (low + high) / 2.0
     self._state["half_range"] = (high - low) / 2.0
 
+  @property
+  def buffer(self) -> Buffer:
+    return NoOpBuffer()
+
   def __call__(
       self,
       action: Union[np.ndarray, Dict[str, np.ndarray]],
-      update_buffer: bool = True) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+      update_buffer: bool = True,
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     """Maps actions from range [-1, 1] to the range in given action space.
 
     Args:
@@ -292,19 +332,24 @@ class ActionRangeDenormalizer(Normalizer):
 class ObservationRangeNormalizer(Normalizer):
   """Observations mapped from given range to [-1, 1]."""
 
-  def __init__(self,
-               space: gym.Space,
-               ignored_keys: Optional[Sequence[str]] = None) -> None:
+  def __init__(
+      self, space: gym.Space, ignored_keys: Optional[Sequence[str]] = None
+  ) -> None:
     super().__init__(space, ignored_keys)
     low = self._flat_space.low
     high = self._flat_space.high
     self._state["mid"] = (low + high) / 2.0
     self._state["half_range"] = (high - low) / 2.0
 
+  @property
+  def buffer(self) -> Buffer:
+    return NoOpBuffer()
+
   def __call__(
       self,
       observation: Union[np.ndarray, Dict[str, np.ndarray]],
-      update_buffer: bool = True) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+      update_buffer: bool = True,
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     """Maps observations from range in given observation space to [-1, 1].
 
     Args:
@@ -329,26 +374,31 @@ class ObservationRangeNormalizer(Normalizer):
 class RunningMeanStdNormalizer(Normalizer):
   """Standardize observations with mean and std calculated online."""
 
-  def __init__(self,
-               space: gym.Space,
-               ignored_keys: Optional[Sequence[str]] = None) -> None:
+  def __init__(
+      self, space: gym.Space, ignored_keys: Optional[Sequence[str]] = None
+  ) -> None:
     super().__init__(space, ignored_keys)
     shape = self._flat_space.shape
     self._state[MEAN] = np.zeros(shape, dtype=np.float64)
     self._state[STD] = np.ones(shape, dtype=np.float64)
     self._buffer = MeanStdBuffer(shape)
 
+  @property
+  def buffer(self) -> MeanStdBuffer:
+    return self._buffer
+
   def __call__(
       self,
       observation: Union[np.ndarray, Dict[str, np.ndarray]],
-      update_buffer: bool = True) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+      update_buffer: bool = True,
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     observation = observation.copy()
     ignored_observation = self._filter_ignored_input(observation)
     observation = utils.flatten(self._space, observation)
     if update_buffer:
       self._buffer.push(observation)
     observation -= self._state[MEAN]
-    observation /= (self._state[STD] + _EPSILON)
+    observation /= self._state[STD] + _EPSILON
     observation = utils.unflatten(self._space, observation)
     observation = self._add_ignored_input(observation, ignored_observation)
     return observation
@@ -360,11 +410,17 @@ class RunningMeanStdAgentVsAgentNormalizer(RunningMeanStdNormalizer):
   def __init__(self, space: gym.Space) -> None:
     # We use the "ignored_keys" to split the agent obs to process individually.
     super().__init__(space, ignored_keys=["opp"])
+    self._buffer = MeanStdBuffer(shape=self._flat_space.shape)
+
+  @property
+  def buffer(self) -> MeanStdBuffer:
+    return self._buffer
 
   def __call__(
       self,
       observation: Union[np.ndarray, Dict[str, np.ndarray]],
-      update_buffer: bool = True) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+      update_buffer: bool = True,
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     observation = observation.copy()
 
     opp_observation = self._filter_ignored_input(observation)
@@ -379,7 +435,7 @@ class RunningMeanStdAgentVsAgentNormalizer(RunningMeanStdNormalizer):
 
     def _normalized(obs, unflatten_space):
       obs -= self._state[MEAN]
-      obs /= (self._state[STD] + _EPSILON)
+      obs /= self._state[STD] + _EPSILON
       obs = utils.unflatten(unflatten_space, obs)
       return obs
 
