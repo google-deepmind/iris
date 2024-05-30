@@ -169,6 +169,11 @@ class MeanStdBuffer(Buffer):
   def data(self) -> Dict[str, Any]:
     return copy.deepcopy(self._data)
 
+  # Used externally.
+  @property
+  def mean(self) -> np.ndarray:
+    return self._data[MEAN]
+
   @data.setter
   def data(self, new_data: Dict[str, Any]) -> None:
     self._data = copy.deepcopy(new_data)
