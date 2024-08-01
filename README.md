@@ -10,5 +10,8 @@
 * [Robotic Table Tennis with Model-Free Reinforcement Learning](https://arxiv.org/abs/2003.14398) (IROS 2020)
 * [ES-MAML: Simple Hessian-Free Meta Learning](https://arxiv.org/abs/1910.01215) (ICLR 2020)
 * [Provably Robust Blackbox Optimization for Reinforcement Learning](https://arxiv.org/abs/1903.02993) (CoRL 2019)
+* [Structured Evolution with Compact Architectures for Scalable Policy Optimization](https://arxiv.org/abs/1804.02395) (ICML 2018)
+* [Optimizing Simulations with Noise-Tolerant Structured Exploration](https://arxiv.org/abs/1805.07831) (ICRA 2018)
+* [On Blackbox Backpropagation and Jacobian Sensing](https://proceedings.neurips.cc/paper_files/paper/2017/file/9c8661befae6dbcd08304dbf4dcaf0db-Paper.pdf) (Neurips 2017)
 
 **Disclaimer:** This is not an officially supported Google product.
