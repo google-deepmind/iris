@@ -15,10 +15,8 @@
 """Algorithm class for Augmented Random Search Blackbox algorithm."""
 
 import collections
-import datetime
 import math
 import pathlib
-import pickle as pkl
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 from absl import logging
@@ -31,6 +29,7 @@ from iris.algorithms import stateless_perturbation_generators
 import jax
 import jax.numpy as jnp
 import numpy as np
+
 
 PRNGKey = jax.Array
 
@@ -540,13 +539,7 @@ class MultiAgentAugmentedRandomSearch(AugmentedRandomSearch):
         per_agent_state["obs_norm_state"]["n"] = obs_norm_state["n"]
       agent_checkpoint_path = f"{checkpoint_path}_agent_{i}"
       logging.info("Saving agent checkpoints to %s...", agent_checkpoint_path)
-      self.save_checkpoint_internal(
-          agent_checkpoint_path, per_agent_state
-      self.save_checkpoint_oss(agent_checkpoint_path, per_agent_state)
-
-  def save_checkpoint_oss(self, checkpoint_path: str, state: Any) -> None:
-    with open(checkpoint_path, "wb") as f:
-      pkl.dump(state, f)
+      checkpoint_util.save_checkpoint(agent_checkpoint_path, per_agent_state)
 
   def split_and_save_checkpoint(self, checkpoint_path: str) -> None:
     state = checkpoint_util.load_checkpoint_state(checkpoint_path)

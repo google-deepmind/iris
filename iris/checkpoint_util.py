@@ -14,16 +14,28 @@
 
 """Utilities for interacting with BBv2 checkpoints."""
 
+import datetime
+import pathlib
 import pickle as pkl
 from typing import Any
 
 from absl import logging
 
 
-def load_checkpoint_state_oss(path: str) -> dict[str, Any]:
+def load_checkpoint_state_oss(path: str | pathlib.Path) -> dict[str, Any]:
   """Loads a checkpoint state from a given path."""
   with open(path, "rb") as f:
     state = pkl.load(f)
   return state
 
+
 load_checkpoint_state = load_checkpoint_state_oss
+
+
+def save_checkpoint_oss(path: str | pathlib.Path, state: dict[str, Any]):
+  """Saves a checkpoint state to a given path."""
+  with open(path, "wb") as f:
+    pkl.dump(state, f)
+
+
+save_checkpoint = save_checkpoint_oss

@@ -478,9 +478,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
                 'n': 5,
             },
         }]
-    algo.save_checkpoint_internal(
-        full_path, state
-    algo.save_checkpoint_oss(full_path, state)
+    checkpoint_util.save_checkpoint(full_path, state)
     algo.split_and_save_checkpoint(checkpoint_path=full_path)
     for i in range(3):
       agent_checkpoint_path = f'{full_path}_agent_{i}'
