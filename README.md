@@ -1,6 +1,10 @@
 # Iris: Synchronous and Distributed Blackbox Optimization at Scale
 
 ## Associated Publications
+* [SARA-RT: Scaling up Robotics Transformers with Self-Adaptive Robust Attention
+](https://arxiv.org/abs/2312.01990) (ICRA 2024 - Best Robotic Manipulation Award)
+* [Embodied AI with Two Arms: Zero-shot Learning, Safety and Modularity
+](https://arxiv.org/abs/2404.03570) (IROS 2024 - Robocup Best Paper Award)
 * [Agile Catching with Whole-Body MPC and Blackbox Policy Learning](https://arxiv.org/abs/2306.08205) (L4DC 2023)
 * [Discovering Adaptable Symbolic Algorithms from Scratch](https://arxiv.org/abs/2307.16890) (IROS 2023, Best Paper Finalist)
 * [Visual-Locomotion: Learning to Walk on Complex Terrains with Vision](https://proceedings.mlr.press/v164/yu22a.html) (CoRL 2022)
