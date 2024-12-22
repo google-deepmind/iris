@@ -14,6 +14,7 @@
 
 """Setup for pip package."""
 
+import itertools
 import setuptools
 
 
@@ -33,6 +34,16 @@ def _parse_requirements(requirements_txt_path: str) -> list[str]:
     return [l for l in lines if (l and 'github.com' not in l)]
 
 
+extras_require = {
+    'rl': _parse_requirements('requirements-rl.txt'),
+    'extras': _parse_requirements('requirements-extras.txt'),
+    'test': _parse_requirements('requirements-test.txt'),
+}
+
+extras_require['all'] = list(
+    itertools.chain.from_iterable(extras_require.values())
+)
+
 setuptools.setup(
     name='google-iris',
     version='0.0.1.alpha',
@@ -41,5 +52,6 @@ setuptools.setup(
     author_email='jaindeepali@google.com',
     install_requires=_parse_requirements('requirements.txt'),
     packages=setuptools.find_packages(),
+    extras_require=extras_require,
     python_requires='>=3.10',
 )

@@ -1,27 +1,9 @@
-# Standard packages.
 typing  # Version dependent on Python version.
-pytest  # Use the latest version to match github workflow.
 absl-py>=1.0.0
-
-# Numerical packages.
 numpy>=1.21.5
-jax  # Use latest version.
-jaxlib  # Use latest version.
-flax  # Use latest version.
-tensorflow  # TODO(team): Resolve version conflicts.
 
 # Distributed systems libraries.
 # NOTE: Requires tensorflow~=2.8.0 to avoid proto issues.
 dm-launchpad[tensorflow]
 dm-reverb[tensorflow]
-
-# Configuration + Experimentation
 ml-collections>=0.1.1
-gin-config>=0.5.0
-
-# Reinforcement Learning
-gym
-tf-agents  # NOTE: Requires tensorflow>=2.15.0 for TFP compatibility.
-
-# Optimization packages
-pyglove

@@ -1,10 +1,14 @@
 # Iris: Synchronous and Distributed Blackbox Optimization at Scale
 
+## Overview
+Iris is a library for performing synchronous and distributed zeroth-order
+optimization at scale. It is meant primarily to train large neural networks with
+evolutionary methods, but can be applied to optimize any high dimensional
+blackbox function.
+
 ## Associated Publications
-* [SARA-RT: Scaling up Robotics Transformers with Self-Adaptive Robust Attention
-](https://arxiv.org/abs/2312.01990) (ICRA 2024 - Best Robotic Manipulation Award)
-* [Embodied AI with Two Arms: Zero-shot Learning, Safety and Modularity
-](https://arxiv.org/abs/2404.03570) (IROS 2024 - Robocup Best Paper Award)
+* [SARA-RT: Scaling up Robotics Transformers with Self-Adaptive Robust Attention](https://arxiv.org/abs/2312.01990) (ICRA 2024 - Best Robotic Manipulation Award)
+* [Embodied AI with Two Arms: Zero-shot Learning, Safety and Modularity](https://arxiv.org/abs/2404.03570) (IROS 2024 - Robocup Best Paper Award)
 * [Agile Catching with Whole-Body MPC and Blackbox Policy Learning](https://arxiv.org/abs/2306.08205) (L4DC 2023)
 * [Discovering Adaptable Symbolic Algorithms from Scratch](https://arxiv.org/abs/2307.16890) (IROS 2023, Best Paper Finalist)
 * [Visual-Locomotion: Learning to Walk on Complex Terrains with Vision](https://proceedings.mlr.press/v164/yu22a.html) (CoRL 2022)
@@ -16,6 +20,6 @@
 * [Provably Robust Blackbox Optimization for Reinforcement Learning](https://arxiv.org/abs/1903.02993) (CoRL 2019)
 * [Structured Evolution with Compact Architectures for Scalable Policy Optimization](https://arxiv.org/abs/1804.02395) (ICML 2018)
 * [Optimizing Simulations with Noise-Tolerant Structured Exploration](https://arxiv.org/abs/1805.07831) (ICRA 2018)
-* [On Blackbox Backpropagation and Jacobian Sensing](https://proceedings.neurips.cc/paper_files/paper/2017/file/9c8661befae6dbcd08304dbf4dcaf0db-Paper.pdf) (Neurips 2017)
+* [On Blackbox Backpropagation and Jacobian Sensing](https://proceedings.neurips.cc/paper_files/paper/2017/file/9c8661befae6dbcd08304dbf4dcaf0db-Paper.pdf) (NeurIPS 2017)
 
 **Disclaimer:** This is not an officially supported Google product.

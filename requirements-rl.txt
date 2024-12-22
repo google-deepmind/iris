@@ -1,0 +1,14 @@
+# Packages required for Reinforcement Learning.
+
+# Environment packages.
+gym
+tf-agents  # NOTE: Requires tensorflow>=2.15.0 for TFP compatibility.
+
+# Numerical packages.
+jax  # Use latest version.
+jaxlib  # Use latest version.
+flax  # Use latest version.
+tensorflow  # TODO(team): Resolve version conflicts.
+
+# Configuration + Experimentation
+gin-config>=0.5.0
