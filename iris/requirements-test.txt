@@ -1,0 +1,1 @@
+pytest  # Use the latest version to match github workflow.
