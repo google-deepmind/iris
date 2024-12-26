@@ -19,21 +19,24 @@ from collections.abc import Sequence
 from absl import app
 from absl import flags
 from iris import normalizer
-from iris.algorithms import ars_algorithm
+from iris.algorithms import multi_agent_ars_algorithm
 
 _NUM_AGENTS = flags.DEFINE_integer('num_agents', 2, 'Number of agents.')
 _HAS_OBS_NORM = flags.DEFINE_boolean(
-    'has_obs_norm', True,
-    'Whether the checkpoint has observation normalization')
+    'has_obs_norm', True, 'Whether the checkpoint has observation normalization'
+)
 _CHECKPOINT_PATH = flags.DEFINE_string(
-    'checkpoint_path', None, 'Path to checkpoint.', required=True)
+    'checkpoint_path', None, 'Path to checkpoint.', required=True
+)
 
 
-def split_and_save_checkpoint(checkpoint_path: str,
-                              num_agents: int = 2,
-                              has_obs_norm_data_buffer: bool = False) -> None:
+def split_and_save_checkpoint(
+    checkpoint_path: str,
+    num_agents: int = 2,
+    has_obs_norm_data_buffer: bool = False,
+) -> None:
   """Splits the checkpoint at checkpoint_path into num_agents checkpoints."""
-  algo = ars_algorithm.MultiAgentAugmentedRandomSearch(
+  algo = multi_agent_ars_algorithm.MultiAgentAugmentedRandomSearch(
       num_suggestions=3,
       step_size=0.5,
       std=1.0,
@@ -41,18 +44,22 @@ def split_and_save_checkpoint(checkpoint_path: str,
       orthogonal_suggestions=True,
       quasirandom_suggestions=True,
       obs_norm_data_buffer=normalizer.MeanStdBuffer()
-      if has_obs_norm_data_buffer else None,
+      if has_obs_norm_data_buffer
+      else None,
       agent_keys=[str(i) for i in range(num_agents)],
-      random_seed=7)
+      random_seed=7,
+  )
   algo.split_and_save_checkpoint(checkpoint_path=checkpoint_path)
 
 
 def main(argv: Sequence[str]) -> None:
   if len(argv) > 1:
     raise app.UsageError('Too many command-line arguments.')
-  split_and_save_checkpoint(checkpoint_path=_CHECKPOINT_PATH.value,
-                            num_agents=_NUM_AGENTS.value,
-                            has_obs_norm_data_buffer=_HAS_OBS_NORM.value)
+  split_and_save_checkpoint(
+      checkpoint_path=_CHECKPOINT_PATH.value,
+      num_agents=_NUM_AGENTS.value,
+      has_obs_norm_data_buffer=_HAS_OBS_NORM.value,
+  )
 
 
 if __name__ == '__main__':
