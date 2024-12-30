@@ -18,7 +18,6 @@ import abc
 import copy
 from typing import Any, Dict, Optional, Sequence, Union
 from absl import logging
-import gin
 import gym
 from gym import spaces
 from gym.spaces import utils
@@ -106,13 +105,16 @@ class NoOpBuffer(Buffer):
     pass
 
 
-@gin.configurable
 class MeanStdBuffer(Buffer):
   """Collect stats for calculating mean and std online."""
 
   def __init__(self, shape: Sequence[int] = (0,)) -> None:
     self._shape = shape
-    self._data = {}
+    self._data = {
+        N: 0,
+        MEAN: np.zeros(self._shape, dtype=np.float64),
+        UNNORM_VAR: np.zeros(self._shape, dtype=np.float64),
+    }
     self.reset()
 
   def reset(self) -> None:
@@ -283,7 +285,6 @@ class Normalizer(abc.ABC):
     self._state = state.copy()
 
 
-@gin.configurable
 class NoNormalizer(Normalizer):
   """No Normalization applied to input."""
 
@@ -300,7 +301,6 @@ class NoNormalizer(Normalizer):
     return value
 
 
-@gin.configurable
 class ActionRangeDenormalizer(Normalizer):
   """Actions mapped to given range from [-1, 1]."""
 
@@ -341,7 +341,6 @@ class ActionRangeDenormalizer(Normalizer):
     return action
 
 
-@gin.configurable
 class ObservationRangeNormalizer(Normalizer):
   """Observations mapped from given range to [-1, 1]."""
 
@@ -383,7 +382,6 @@ class ObservationRangeNormalizer(Normalizer):
     return observation
 
 
-@gin.configurable
 class RunningMeanStdNormalizer(Normalizer):
   """Standardize observations with mean and std calculated online."""
 

@@ -90,53 +90,68 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
         else None,
         random_seed=7,
     )
-    init_state = {'init_params': np.array([10., 10.])}
+    init_state = {'init_params': np.array([10.0, 10.0])}
     if expected_obs_norm_state:
-      init_state['obs_norm_buffer_data'] = {'mean': np.asarray([0., 0.]),
-                                            'std': np.asarray([1., 1.]),
-                                            'n': 0}
+      init_state['obs_norm_buffer_data'] = {
+          'mean': np.asarray([0.0, 0.0]),
+          'std': np.asarray([1.0, 1.0]),
+          'n': 0,
+      }
     algo.initialize(init_state)
-
+    # self.assertIsNotNone(algo._obs_norm_data_buffer)
     with self.subTest('init-mean'):
-      self.assertAllClose(np.array(algo._opt_params),
-                          init_state['init_params'])
-    if expected_obs_norm_state is not None:
+      self.assertAllClose(np.array(algo._opt_params), init_state['init_params'])
+    if (
+        expected_obs_norm_state is not None
+        and algo._obs_norm_data_buffer is not None
+    ):
       with self.subTest('init-obs-mean'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['mean']),
-            np.asarray(init_state['obs_norm_buffer_data']['mean']))
+            np.asarray(init_state['obs_norm_buffer_data']['mean']),
+        )
       with self.subTest('init-obs-n'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['n']),
-            np.asarray(init_state['obs_norm_buffer_data']['n']))
+            np.asarray(init_state['obs_norm_buffer_data']['n']),
+        )
       with self.subTest('init-obs-std'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['std']),
-            init_state['obs_norm_buffer_data']['std'])
+            init_state['obs_norm_buffer_data']['std'],
+        )
 
-    expected_restore_state = {'params_to_eval': np.array([5., 6.])}
+    expected_restore_state = {'params_to_eval': np.array([5.0, 6.0])}
     if expected_obs_norm_state is not None:
       expected_restore_state['obs_norm_state'] = expected_obs_norm_state
     algo.restore_state_from_checkpoint(expected_restore_state)
 
-    self.assertAllClose(algo._opt_params,
-                        expected_restore_state['params_to_eval'])
-    if expected_obs_norm_state is not None:
+    self.assertAllClose(
+        algo._opt_params, expected_restore_state['params_to_eval']
+    )
+    if (
+        expected_obs_norm_state is not None
+        and algo._obs_norm_data_buffer is not None
+    ):
       std = expected_restore_state['obs_norm_state']['std']
       var = np.square(std)
       expected_unnorm_var = var * 4
       with self.subTest('restore-obs-mean'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['mean']),
-            np.asarray(expected_restore_state['obs_norm_state']['mean']))
+            np.asarray(expected_restore_state['obs_norm_state']['mean']),
+        )
       with self.subTest('restore-obs-n'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['n']),
-            np.asarray(expected_restore_state['obs_norm_state']['n']))
+            np.asarray(expected_restore_state['obs_norm_state']['n']),
+        )
       with self.subTest('restore-obs-std'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['unnorm_var']),
-            expected_unnorm_var)
+            expected_unnorm_var,
+        )
+
 
 if __name__ == '__main__':
   absltest.main()

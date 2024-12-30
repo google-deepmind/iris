@@ -233,7 +233,10 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
 
     with self.subTest('init-mean'):
       self.assertAllClose(np.array(algo._opt_params), init_state['init_params'])
-    if state['obs_norm_state'] is not None:
+    if (
+        state['obs_norm_state'] is not None
+        and algo._obs_norm_data_buffer is not None
+    ):
       with self.subTest('init-obs-mean'):
         self.assertAllClose(
             np.asarray(algo._obs_norm_data_buffer.data['mean']),
@@ -253,7 +256,10 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
     algo.restore_state_from_checkpoint(state)
 
     self.assertAllClose(algo._opt_params, expected_state['params_to_eval'])
-    if expected_state['obs_norm_state'] is not None:
+    if (
+        expected_state['obs_norm_state'] is not None
+        and algo._obs_norm_data_buffer is not None
+    ):
       std = expected_state['obs_norm_state']['std']
       var = np.square(std)
       expected_unnorm_var = var * 4

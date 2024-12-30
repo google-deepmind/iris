@@ -14,6 +14,7 @@
 
 """Policy class for computing action from weights and observation vector."""
 
+import abc
 from typing import Dict, Union
 
 import gym
@@ -21,7 +22,7 @@ from gym.spaces import utils
 import numpy as np
 
 
-class BasePolicy(object):
+class BasePolicy(abc.ABC):
   """Base policy class for reinforcement learning."""
 
   def __init__(self, ob_space: gym.Space, ac_space: gym.Space) -> None:
@@ -55,23 +56,27 @@ class BasePolicy(object):
     self._iteration = value
 
   def update_weights(self, new_weights: np.ndarray) -> None:
+    """Updates the flat weights vector."""
     self._weights[:] = new_weights[:]
 
   def get_weights(self) -> np.ndarray:
+    """Returns the flat weights vector."""
     return self._weights
 
   def get_representation_weights(self):
+    """Returns the flat representation weights vector."""
     return self._representation_weights
 
   def update_representation_weights(
       self, new_representation_weights: np.ndarray) -> None:
+    """Updates the flat representation weights vector."""
     self._representation_weights[:] = new_representation_weights[:]
 
   def reset(self):
+    """Resets the internal policy state."""
     pass
 
+  @abc.abstractmethod
   def act(self, ob: Union[np.ndarray, Dict[str, np.ndarray]]
           ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     """Maps the observation to action."""
-    raise NotImplementedError(
-        "Should be implemented in derived classes for specific policies.")

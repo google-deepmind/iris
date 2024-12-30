@@ -25,7 +25,7 @@ import numpy as np
 import pyglove as pg
 
 
-class PyGlovePolicy(abc.ABC, base_policy.BasePolicy):
+class PyGlovePolicy(base_policy.BasePolicy):
   """Base class for all policies involving NAS search."""
 
   @abc.abstractmethod
@@ -42,40 +42,49 @@ class PyGlovePolicy(abc.ABC, base_policy.BasePolicy):
 class NumpyTopologyPolicy(PyGlovePolicy):
   """Parent class for numpy-based policies."""
 
-  def __init__(self,
-               ob_space: gym.Space,
-               ac_space: gym.Space,
-               hidden_layer_sizes: Sequence[int],
-               seed: int = 0,
-               **kwargs):
-    base_policy.BasePolicy.__init__(self, ob_space, ac_space)
+  def __init__(
+      self,
+      ob_space: gym.Space,
+      ac_space: gym.Space,
+      hidden_layer_sizes: Sequence[int],
+      seed: int = 0,
+      **kwargs
+  ):
+    super().__init__(ob_space, ac_space)
 
     self._hidden_layer_sizes = hidden_layer_sizes
-    self._total_nb_nodes = sum(
-        self._hidden_layer_sizes) + self._ob_dim + self._ac_dim
-    self._all_layer_sizes = [self._ob_dim] + list(
-        self._hidden_layer_sizes) + [self._ac_dim]
+    self._total_nb_nodes = (
+        sum(self._hidden_layer_sizes) + self._ob_dim + self._ac_dim
+    )
+    self._all_layer_sizes = (
+        [self._ob_dim] + list(self._hidden_layer_sizes) + [self._ac_dim]
+    )
 
     self._total_weight_parameters = self._total_nb_nodes**2
     self._total_bias_parameters = self._total_nb_nodes
-    self._total_nb_parameters = self._total_weight_parameters + self._total_bias_parameters
+    self._total_nb_parameters = (
+        self._total_weight_parameters + self._total_bias_parameters
+    )
 
     np.random.seed(seed)
     self._weights = np.random.uniform(
-        low=-1.0, high=1.0, size=(self._total_nb_nodes, self._total_nb_nodes))
+        low=-1.0, high=1.0, size=(self._total_nb_nodes, self._total_nb_nodes)
+    )
     self._biases = np.random.uniform(
-        low=-1.0, high=1.0, size=self._total_nb_nodes)
+        low=-1.0, high=1.0, size=self._total_nb_nodes
+    )
 
     self._edge_dict = {}
 
-  def act(self, ob: Union[np.ndarray, Dict[str, np.ndarray]]
-          ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
+  def act(
+      self, ob: Union[np.ndarray, Dict[str, np.ndarray]]
+  ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     ob = utils.flatten(self._ob_space, ob)
     values = [0.0] * self._total_nb_nodes
     for i in range(self._ob_dim):
       values[i] = ob[i]
     for i in range(self._total_nb_nodes):
-      if ((i > self._ob_dim) and (i < self._total_nb_nodes - self._ac_dim)):
+      if (i > self._ob_dim) and (i < self._total_nb_nodes - self._ac_dim):
         values[i] = np.tanh(values[i] + self._biases[i])
       if i in self._edge_dict:
         j_list = self._edge_dict[i]
