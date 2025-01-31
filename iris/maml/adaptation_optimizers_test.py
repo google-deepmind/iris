@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for adaptation_optimizers."""
-from iris import worker
 from iris.maml import adaptation_optimizers
+from iris.workers import simple_worker
 import numpy as np
 from absl.testing import absltest
 from absl.testing import parameterized
@@ -24,10 +23,11 @@ class AdaptationOptimizersTest(parameterized.TestCase):
   """Tests adaptation optimizers."""
 
   def setUp(self):
-    self.worker_obj = worker.SimpleWorker(
+    self.worker_obj = simple_worker.SimpleWorker(
         worker_id=0,
         initial_params=5.0 * np.ones(2),
-        blackbox_function=lambda x: -1 * np.sum(x**2))
+        blackbox_function=lambda x: -1 * np.sum(x**2),
+    )
     self.init_params = self.worker_obj._init_state['init_params']
     super().setUp()
 

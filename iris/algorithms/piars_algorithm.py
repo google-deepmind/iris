@@ -20,9 +20,9 @@ from absl import logging
 import gym
 from gym import spaces
 from gym.spaces import utils
-from iris import worker_util
 from iris.algorithms import ars_algorithm
 from iris.policies import keras_pi_policy
+from iris.workers import worker_util
 import numpy as np
 import tensorflow as tf
 from tf_agents.agents.categorical_dqn import categorical_dqn_agent

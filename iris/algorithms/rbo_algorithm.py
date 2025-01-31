@@ -20,10 +20,9 @@ paper: Provably Robust Blackbox Optimization for Reinforcement Learning
 """
 
 from typing import Sequence
-
-from iris import worker_util
 from iris.algorithms import ars_algorithm
 from iris.algorithms import optimizers
+from iris.workers import worker_util
 import numpy as np
 
 

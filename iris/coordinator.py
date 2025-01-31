@@ -14,7 +14,7 @@
 
 """Coordinator class for distributed blackbox optimization library."""
 
-from collections.abc import Sequence, Mapping
+from collections.abc import Mapping, Sequence
 from concurrent import futures
 import dataclasses
 import os
@@ -28,8 +28,8 @@ from absl import logging
 import courier
 from iris import checkpoint_util
 from iris import logger
-from iris import worker_util
 from iris.algorithms import algorithm
+from iris.workers import worker_util
 import launchpad as lp
 import numpy as np
 from tensorflow.io import gfile

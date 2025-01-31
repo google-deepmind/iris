@@ -20,8 +20,8 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 from absl import logging
 from iris import checkpoint_util
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import ars_algorithm
+from iris.workers import worker_util
 import numpy as np
 
 

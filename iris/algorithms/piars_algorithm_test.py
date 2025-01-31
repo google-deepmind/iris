@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import gym
-from iris import worker_util
 from iris.algorithms import piars_algorithm
 from iris.policies import keras_pi_policy
+from iris.workers import worker_util
 import numpy as np
 from absl.testing import absltest
 from absl.testing import parameterized

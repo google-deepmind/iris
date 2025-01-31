@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import ars_algorithm
+from iris.workers import worker_util
 import numpy as np
 import tensorflow as tf
 from absl.testing import absltest

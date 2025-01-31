@@ -15,8 +15,8 @@
 import os
 from iris import checkpoint_util
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import multi_agent_ars_algorithm
+from iris.workers import worker_util
 import numpy as np
 import tensorflow as tf
 from absl.testing import absltest

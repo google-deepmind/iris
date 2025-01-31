@@ -22,9 +22,9 @@ from absl import logging
 from flax import linen as nn
 from iris import checkpoint_util
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import ars_algorithm
 from iris.algorithms import stateless_perturbation_generators
+from iris.workers import worker_util
 import jax
 import jax.numpy as jnp
 import numpy as np

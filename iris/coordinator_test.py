@@ -22,9 +22,9 @@ from absl.testing import absltest
 import gym
 from iris import checkpoint_util
 from iris import coordinator
-from iris import worker
 from iris.algorithms import ars_algorithm
 from iris.policies import nn_policy
+from iris.workers import rl_worker
 import launchpad as lp
 from ml_collections import config_dict
 import numpy as np
@@ -159,7 +159,7 @@ class CoordinatorTest(absltest.TestCase):
             ),
             worker=config_dict.ConfigDict(
                 dict(
-                    worker_class=worker.RLWorker,
+                    worker_class=rl_worker.RLWorker,
                     worker_args=dict(
                         env=TestEnv,
                         policy=nn_policy.FullyConnectedNeuralNetworkPolicy,

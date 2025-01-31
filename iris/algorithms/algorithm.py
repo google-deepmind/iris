@@ -17,7 +17,7 @@
 import abc
 import pathlib
 from typing import Any, Dict, Sequence, Union
-from iris import worker_util
+from iris.workers import worker_util
 import numpy as np
 
 

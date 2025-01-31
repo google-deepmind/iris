@@ -26,8 +26,8 @@ import dataclasses
 from typing import Any, Dict, Sequence
 
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import algorithm
+from iris.workers import worker_util
 import numpy as np
 from ribs import archives
 from ribs import emitters

@@ -14,9 +14,8 @@
 
 """Example configuration for Iris experiments."""
 
-
-from iris import worker
 from iris.algorithms import ars_algorithm
+from iris.workers import simple_worker
 from ml_collections import config_dict
 import numpy as np
 
@@ -37,9 +36,13 @@ def get_worker_config():
 
   return config_dict.ConfigDict(
       dict(
-          worker_class=worker.SimpleWorker,
-          worker_args={'initial_params': np.ones(10),
-                       'blackbox_function': lambda x: -1 * np.sum(x**2)}))
+          worker_class=simple_worker.SimpleWorker,
+          worker_args={
+              'initial_params': np.ones(10),
+              'blackbox_function': lambda x: -1 * np.sum(x**2),
+          },
+      )
+  )
 
 
 def get_algo_config():

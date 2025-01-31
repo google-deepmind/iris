@@ -14,9 +14,9 @@
 
 # pytype: disable=attribute-error
 from gym import spaces
-from iris import worker_util
 from iris.algorithms import es_enas_algorithm
 from iris.policies import nas_policy
+from iris.workers import worker_util
 import numpy as np
 import pyglove as pg
 from absl.testing import absltest

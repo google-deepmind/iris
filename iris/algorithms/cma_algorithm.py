@@ -18,8 +18,8 @@ from typing import Any, Dict, Optional, Sequence
 
 import cma
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import algorithm
+from iris.workers import worker_util
 import numpy as np
 
 

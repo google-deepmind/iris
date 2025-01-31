@@ -18,9 +18,9 @@ import math
 from typing import Any, Callable, Dict, Optional, Sequence
 
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import algorithm
 from iris.algorithms import stateless_perturbation_generators
+from iris.workers import worker_util
 import numpy as np
 
 

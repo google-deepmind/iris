@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from iris import worker_util
 from iris.algorithms import pyglove_algorithm
+from iris.workers import worker_util
 import numpy as np
 import pyglove as pg
 from absl.testing import absltest

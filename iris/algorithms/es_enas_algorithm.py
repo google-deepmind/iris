@@ -17,10 +17,9 @@
 import functools
 from multiprocessing import dummy as mp_threads
 from typing import Any, Dict, Sequence
-
-from iris import worker_util
 from iris.algorithms import ars_algorithm
 from iris.algorithms import controllers
+from iris.workers import worker_util
 import pyglove as pg
 
 

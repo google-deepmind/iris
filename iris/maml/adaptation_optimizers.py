@@ -15,7 +15,7 @@
 """Adaptation optimizers mapping parameter input to objective value."""
 import enum
 from typing import Callable, Sequence, Tuple, Union
-from iris import worker_util
+from iris.workers import worker_util
 import numpy as np
 
 FloatLike = Union[float, np.float32, np.float64]

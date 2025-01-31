@@ -15,9 +15,9 @@
 from unittest import mock
 
 from iris import normalizer
-from iris import worker_util
 from iris.algorithms import algorithm
 from iris.algorithms import pyribs_algorithm
+from iris.workers import worker_util
 import numpy as np
 from ribs import archives
 

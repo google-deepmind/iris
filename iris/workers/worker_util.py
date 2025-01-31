@@ -45,7 +45,7 @@ def merge_eval_results(results: Sequence[EvaluationResult]) -> EvaluationResult:
   merged_value = np.mean([r.value for r in results])
 
   merged_obs_norm_buffer_data = None
-  if results[0].obs_norm_buffer_data is not None:
+  if results[0].obs_norm_buffer_data:
     merged_buffer = normalizer.MeanStdBuffer()
     merged_buffer.data = results[0].obs_norm_buffer_data
     for result in itertools.islice(results, 1, None):
