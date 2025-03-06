@@ -1,10 +1,26 @@
 # Iris: Synchronous and Distributed Blackbox Optimization at Scale
+[![Continuous Integration](https://github.com/google-deepmind/iris/actions/workflows/core_test.yml/badge.svg)](https://github.com/google/vizier/actions/workflows/ci.yml?query=branch%3Amain)
 
 ## Overview
 Iris is a library for performing synchronous and distributed zeroth-order
 optimization at scale. It is meant primarily to train large neural networks with
 evolutionary methods, but can be applied to optimize any high dimensional
 blackbox function.
+
+## Getting Started
+
+To launch a local optimization, run:
+
+```bash
+python3 -m launch \
+--lp_launch_type=local_mp \
+--experiment_name=iris_example \
+--config=iris/configs/simple_example_config.py \
+--logdir=/tmp/bblog \
+--num_workers=16 \
+--num_eval_workers=10 \
+--alsologtostderr
+```
 
 ## Associated Publications
 * [SARA-RT: Scaling up Robotics Transformers with Self-Adaptive Robust Attention](https://arxiv.org/abs/2312.01990) (ICRA 2024 - Best Robotic Manipulation Award)
