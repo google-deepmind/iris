@@ -1,6 +1,9 @@
 typing  # Version dependent on Python version.
 absl-py>=1.0.0
-numpy>=1.21.5
+numpy>=1.21.5,<2.0.0
+
+jax>=0.4.34  # TODO:remove
+jaxlib>=0.4.34  # TODO:remove
 
 # Distributed systems libraries.
 # NOTE: Requires tensorflow~=2.8.0 to avoid proto issues.
