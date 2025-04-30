@@ -602,7 +602,7 @@ class Coordinator:
             "worker.", i, e
         )
         i = (i + 1) % self._num_workers
-    return init_state
+    return init_state  # pytype: disable=bad-return-type
 
   def initialize_algorithm_state(self) -> int:
     """Initialize algorithm state, potentially loading an existing checkpoint.
