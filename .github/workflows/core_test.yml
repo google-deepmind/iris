@@ -35,4 +35,4 @@ jobs:
           pip freeze
       - name: Test with pytest  # TODO(team): Fix tensorflow version conflict.
         run: |
-          # pytest -n auto iris
+          pytest -n auto iris/coordinator_test.py
