@@ -20,8 +20,8 @@ from typing import Any, Callable, Dict, Optional, Sequence
 
 from absl import logging
 from flax import linen as nn
+from iris import buffer
 from iris import checkpoint_util
-from iris import normalizer
 from iris.algorithms import ars_algorithm
 from iris.algorithms import stateless_perturbation_generators
 from iris.workers import worker_util
@@ -63,7 +63,7 @@ class LearnableAugmentedRandomSearch(ars_algorithm.AugmentedRandomSearch):
       orthogonal_suggestions: bool = False,
       quasirandom_suggestions: bool = False,
       top_sort_type: str = "max",
-      obs_norm_data_buffer: Optional[normalizer.MeanStdBuffer] = None,
+      obs_norm_data_buffer: Optional[buffer.MeanStdBuffer] = None,
       seed: int = 42,
       reward_buffer_size: int = 10,
       **kwargs,

@@ -13,23 +13,10 @@
 # limitations under the License.
 
 import gym
+from iris import buffer as buffer_lib
 from iris import normalizer
 import numpy as np
 from absl.testing import absltest
-
-
-class BufferTest(absltest.TestCase):
-
-  def test_meanstdbuffer(self):
-    buffer = normalizer.MeanStdBuffer((1,))
-    buffer.push(np.asarray(10.0))
-    buffer.push(np.asarray(11.0))
-
-    new_buffer = normalizer.MeanStdBuffer((1,))
-    new_buffer.data = buffer.data
-
-    self.assertEqual(new_buffer._std, buffer._std)
-    self.assertEqual(new_buffer._data['n'], buffer._data['n'])
 
 
 class NormalizerTest(absltest.TestCase):
@@ -139,13 +126,13 @@ class NormalizerTest(absltest.TestCase):
     self.assertEqual(norm.buffer._data['n'], 4)
 
   def test_mean_std_buffer_empty_merge(self):
-    mean_std_buffer = normalizer.MeanStdBuffer()
+    mean_std_buffer = buffer_lib.MeanStdBuffer()
     self.assertEqual(mean_std_buffer._data['n'], 0)
     mean_std_buffer.merge({'n': 0})
     self.assertEqual(mean_std_buffer._data['n'], 0)
 
   def test_mean_std_buffer_scalar(self):
-    mean_std_buffer = normalizer.MeanStdBuffer((1,))
+    mean_std_buffer = buffer_lib.MeanStdBuffer((1,))
     mean_std_buffer.push(np.asarray(10.0))
     self.assertEqual(mean_std_buffer._std, 1.0)  # First value is always 1.0.
 
@@ -154,10 +141,10 @@ class NormalizerTest(absltest.TestCase):
     np.testing.assert_almost_equal(mean_std_buffer._std, np.sqrt(0.5))
 
   def test_mean_std_buffer_reject_infinity_on_merge(self):
-    mean_std_buffer = normalizer.MeanStdBuffer((1,))
+    mean_std_buffer = buffer_lib.MeanStdBuffer((1,))
     mean_std_buffer.push(np.asarray(10.0))
 
-    infinty_buffer = normalizer.MeanStdBuffer((1,))
+    infinty_buffer = buffer_lib.MeanStdBuffer((1,))
     infinty_buffer.push(np.asarray(np.inf))
 
     mean_std_buffer.merge(infinty_buffer.data)

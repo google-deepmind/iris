@@ -18,8 +18,8 @@ import pathlib
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from absl import logging
+from iris import buffer
 from iris import checkpoint_util
-from iris import normalizer
 from iris.algorithms import ars_algorithm
 from iris.workers import worker_util
 import numpy as np
@@ -36,7 +36,7 @@ class MultiAgentAugmentedRandomSearch(ars_algorithm.AugmentedRandomSearch):
       orthogonal_suggestions: bool = False,
       quasirandom_suggestions: bool = False,
       top_sort_type: str = "max",
-      obs_norm_data_buffer: Optional[normalizer.MeanStdBuffer] = None,
+      obs_norm_data_buffer: Optional[buffer.MeanStdBuffer] = None,
       agent_keys: Optional[List[str]] = None,
       restore_state_from_single_agent: bool = False,
       **kwargs,

@@ -24,9 +24,12 @@ from absl import logging
 
 def load_checkpoint_state_oss(path: str | pathlib.Path) -> dict[str, Any]:
   """Loads a checkpoint state from a given path."""
-  with open(path, "rb") as f:
-    state = pkl.load(f)
-  return state
+  try:
+    with open(path, "rb") as f:
+      state = pkl.load(f)
+    return state
+  except IsADirectoryError as e:
+    raise ValueError(f"Path {path} is not a valid checkpoint file.") from e
 
 
 load_checkpoint_state = load_checkpoint_state_oss

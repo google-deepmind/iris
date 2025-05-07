@@ -1,5 +1,5 @@
 # Iris: Synchronous and Distributed Blackbox Optimization at Scale
-[![Continuous Integration](https://github.com/google-deepmind/iris/actions/workflows/core_test.yml/badge.svg)](https://github.com/google/vizier/actions/workflows/ci.yml?query=branch%3Amain)
+[![Continuous Integration](https://github.com/google-deepmind/iris/actions/workflows/core_test.yml/badge.svg)](https://github.com/google-deepmind/iris/actions?query=branch%3Amain)
 
 ## Overview
 Iris is a library for performing synchronous and distributed zeroth-order
@@ -12,10 +12,12 @@ blackbox function.
 To launch a local optimization, run:
 
 ```bash
+cd iris
+
 python3 -m launch \
 --lp_launch_type=local_mp \
 --experiment_name=iris_example \
---config=iris/configs/simple_example_config.py \
+--config=configs/simple_example_config.py \
 --logdir=/tmp/bblog \
 --num_workers=16 \
 --num_eval_workers=10 \
@@ -23,6 +25,8 @@ python3 -m launch \
 ```
 
 ## Associated Publications
+
+* [Achieving Human Level Competitive Robot Table Tennis](https://arxiv.org/abs/2408.03906) (ICRA 2025 - Best Paper Award Finalist)
 * [SARA-RT: Scaling up Robotics Transformers with Self-Adaptive Robust Attention](https://arxiv.org/abs/2312.01990) (ICRA 2024 - Best Robotic Manipulation Award)
 * [Embodied AI with Two Arms: Zero-shot Learning, Safety and Modularity](https://arxiv.org/abs/2404.03570) (IROS 2024 - Robocup Best Paper Award)
 * [Agile Catching with Whole-Body MPC and Blackbox Policy Learning](https://arxiv.org/abs/2306.08205) (L4DC 2023)

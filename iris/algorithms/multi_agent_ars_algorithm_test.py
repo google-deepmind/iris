@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import os
+from iris import buffer
 from iris import checkpoint_util
-from iris import normalizer
 from iris.algorithms import multi_agent_ars_algorithm
 from iris.workers import worker_util
 import numpy as np
@@ -214,7 +214,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
         top_percentage=1,
         orthogonal_suggestions=True,
         quasirandom_suggestions=True,
-        obs_norm_data_buffer=normalizer.MeanStdBuffer()
+        obs_norm_data_buffer=buffer.MeanStdBuffer()
         if state['obs_norm_state'] is not None
         else None,
         agent_keys=[str(i) for i in range(num_agents)],
@@ -430,7 +430,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
         top_percentage=1,
         orthogonal_suggestions=True,
         quasirandom_suggestions=True,
-        obs_norm_data_buffer=normalizer.MeanStdBuffer()
+        obs_norm_data_buffer=buffer.MeanStdBuffer()
         if state['obs_norm_state'] is not None
         else None,
         agent_keys=[str(i) for i in range(num_agents)],
@@ -468,7 +468,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
         top_percentage=1,
         orthogonal_suggestions=True,
         quasirandom_suggestions=True,
-        obs_norm_data_buffer=normalizer.MeanStdBuffer(),
+        obs_norm_data_buffer=buffer.MeanStdBuffer(),
         agent_keys=[str(i) for i in range(3)],
         random_seed=7,
     )

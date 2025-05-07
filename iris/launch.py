@@ -18,7 +18,6 @@ import pathlib
 
 from absl import app  # pylint: disable=unused-import
 from absl import flags
-from flax import traverse_util
 from iris import coordinator
 import launchpad as lp
 from ml_collections import config_dict as configdict
@@ -134,14 +133,16 @@ def make_bb_program(
     )
     with program.group('eval_worker'):
       for worker_id in range(num_eval_workers):
-        eva_worker_handle = program.add_node(
+        eval_worker_handle = program.add_node(
             lp.CourierNode(
                 eval_worker_config['worker_class'],
                 worker_id=worker_id,
                 worker_type='eval',
-                **eval_worker_config['worker_args']))
-        eva_worker_handle.set_client_kwargs(call_timeout=call_timeout)
-        eval_workers.append(eva_worker_handle)
+                **eval_worker_config['worker_args'],
+            )
+        )
+        eval_worker_handle.set_client_kwargs(call_timeout=call_timeout)
+        eval_workers.append(eval_worker_handle)
 
     evaluator_node = lp.CourierNode(
         coordinator.Coordinator,
@@ -187,6 +188,7 @@ def launch(make_program):
         config=config,
         logdir=_LOGDIR.value,
         warmstartdir=_WARMSTARTDIR.value,
+        experiment_name=_EXPERIMENT_NAME.value,
         random_seed=i,
     )
     programs.append(program)

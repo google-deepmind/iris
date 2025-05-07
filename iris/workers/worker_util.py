@@ -17,7 +17,7 @@
 import dataclasses
 import itertools
 from typing import Dict, Optional, Sequence
-from iris import normalizer
+from iris import buffer
 import numpy as np
 
 FloatLike = int | float | np.float32 | np.float64
@@ -46,7 +46,7 @@ def merge_eval_results(results: Sequence[EvaluationResult]) -> EvaluationResult:
 
   merged_obs_norm_buffer_data = None
   if results[0].obs_norm_buffer_data:
-    merged_buffer = normalizer.MeanStdBuffer()
+    merged_buffer = buffer.MeanStdBuffer()
     merged_buffer.data = results[0].obs_norm_buffer_data
     for result in itertools.islice(results, 1, None):
       merged_buffer.merge(result.obs_norm_buffer_data)

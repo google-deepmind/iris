@@ -25,7 +25,7 @@ a grid-based archive.
 import dataclasses
 from typing import Any, Dict, Sequence
 
-from iris import normalizer
+from iris import buffer as buffer_lib
 from iris.algorithms import algorithm
 from iris.workers import worker_util
 import numpy as np
@@ -41,9 +41,9 @@ _INDEX = "index"
 _SOLUTION = "solution"
 # Extra column names for storing normalizer data with solutions.
 _OBS_NORM_PREFIX = "obs_norm_"
-_OBS_NORM_MEAN = _OBS_NORM_PREFIX + normalizer.MEAN
-_OBS_NORM_STD = _OBS_NORM_PREFIX + normalizer.STD
-_OBS_NORM_N = _OBS_NORM_PREFIX + normalizer.N
+_OBS_NORM_MEAN = _OBS_NORM_PREFIX + buffer_lib.MEAN
+_OBS_NORM_STD = _OBS_NORM_PREFIX + buffer_lib.STD
+_OBS_NORM_N = _OBS_NORM_PREFIX + buffer_lib.N
 
 
 @dataclasses.dataclass(frozen=True)
@@ -69,7 +69,7 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
   def __init__(
       self,
       measure_specs: Sequence[MeasureSpec],
-      obs_norm_data_buffer: normalizer.MeanStdBuffer,
+      obs_norm_data_buffer: buffer_lib.MeanStdBuffer,
       initial_step_size: float,
       num_suggestions_per_emitter: int,
       num_emitters: int,
@@ -136,8 +136,8 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
         ranges=self._archive_ranges,
         qd_score_offset=self._qd_score_offset,
         extra_fields={
-            _OBS_NORM_MEAN: (buffer_state[normalizer.MEAN].size, np.float32),
-            _OBS_NORM_STD: (buffer_state[normalizer.STD].size, np.float32),
+            _OBS_NORM_MEAN: (buffer_state[buffer_lib.MEAN].size, np.float32),
+            _OBS_NORM_STD: (buffer_state[buffer_lib.STD].size, np.float32),
             _OBS_NORM_N: ((), np.int32),
         },
     )
@@ -176,9 +176,9 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
       elite = self._archive.best_elite
       param_suggestions = [elite[_SOLUTION]] * self._num_evals
       buffer = {
-          normalizer.N: elite[_OBS_NORM_N],
-          normalizer.MEAN: elite[_OBS_NORM_MEAN],
-          normalizer.STD: elite[_OBS_NORM_STD],
+          buffer_lib.N: elite[_OBS_NORM_N],
+          buffer_lib.MEAN: elite[_OBS_NORM_MEAN],
+          buffer_lib.STD: elite[_OBS_NORM_STD],
       }
     else:
       param_suggestions = self._scheduler.ask()
@@ -205,9 +205,9 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
       self._obs_norm_data_buffer.merge(result.obs_norm_buffer_data)
       objective.append(result.value)
       measures.append([result.metrics[name] for name in self._measure_names])
-      obs_norm_n.append(result.obs_norm_buffer_data[normalizer.N])
-      obs_norm_std.append(result.obs_norm_buffer_data[normalizer.STD])
-      obs_norm_mean.append(result.obs_norm_buffer_data[normalizer.MEAN])
+      obs_norm_n.append(result.obs_norm_buffer_data[buffer_lib.N])
+      obs_norm_std.append(result.obs_norm_buffer_data[buffer_lib.STD])
+      obs_norm_mean.append(result.obs_norm_buffer_data[buffer_lib.MEAN])
 
     # Store the state of the obs_norm_buffer for each solution so that it can be
     # reproduced later when evaluating the policy, similar to other algorithms

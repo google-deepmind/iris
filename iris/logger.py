@@ -20,7 +20,6 @@ import time
 from typing import Any
 import weakref
 
-import jax
 import numpy as np
 import tree
 
@@ -28,9 +27,10 @@ import tree
 def tensor_to_numpy(value: Any):
   if hasattr(value, 'numpy'):
     return value.numpy()  # tf.Tensor (TF2).
-  if isinstance(value, jax.Array):
+  try:
     return np.asarray(value)
-  return value
+  except (TypeError, ValueError):
+    return value
 
 
 def to_numpy(values: Any):

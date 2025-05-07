@@ -14,7 +14,7 @@
 
 from unittest import mock
 
-from iris import normalizer
+from iris import buffer
 from iris.algorithms import algorithm
 from iris.algorithms import pyribs_algorithm
 from iris.workers import worker_util
@@ -35,7 +35,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
     # Basic parameters chosen to be simple enough to not distract from the
     # algorithm logic but with enough complexity to test functionality e.g.
     # using multiple measure specs.
-    self.buffer = normalizer.MeanStdBuffer(shape=(8,))
+    self.buffer = buffer.MeanStdBuffer(shape=(8,))
     self.num_suggestions_per_emitter = 10
     self.num_emitters = 20
     self.initial_step_size = 1.0
@@ -93,9 +93,8 @@ class PyribsAlgorithmTest(absltest.TestCase):
         worker_util.EvaluationResult(
             params_evaluated=suggestion[algorithm.PARAMS_TO_EVAL],
             value=1,
-            obs_norm_buffer_data=suggestion[
-                algorithm.OBS_NORM_BUFFER_STATE
-            ] | {normalizer.N: 1, normalizer.UNNORM_VAR: np.ones((8,))},
+            obs_norm_buffer_data=suggestion[algorithm.OBS_NORM_BUFFER_STATE]
+            | {buffer.N: 1, buffer.UNNORM_VAR: np.ones((8,))},
             metrics={'x': 1, 'y': 10},
         )
         for suggestion in suggestions
@@ -103,7 +102,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
     # Give the first evaluation a high score so it is the elite.
     evaluations[0].value = 1000
     if evaluations[0].obs_norm_buffer_data is not None:
-      evaluations[0].obs_norm_buffer_data[normalizer.N] = 1000
+      evaluations[0].obs_norm_buffer_data[buffer.N] = 1000
     self.test_algorithm.process_evaluations(evaluations)
 
     eval_suggestions = self.test_algorithm.get_param_suggestions(evaluate=True)
@@ -115,13 +114,13 @@ class PyribsAlgorithmTest(absltest.TestCase):
           evaluations[0].params_evaluated
       )
       np.testing.assert_equal(
-          eval_suggestion[algorithm.OBS_NORM_BUFFER_STATE][normalizer.N],
-          evaluations[0].obs_norm_buffer_data[normalizer.N],
+          eval_suggestion[algorithm.OBS_NORM_BUFFER_STATE][buffer.N],
+          evaluations[0].obs_norm_buffer_data[buffer.N],
       )
       self.assertFalse(eval_suggestion[algorithm.UPDATE_OBS_NORM_BUFFER])
 
   def test_restore_state_from_checkpoint_without_archive(self):
-    checkpoint_buffer = normalizer.MeanStdBuffer(shape=(8,))
+    checkpoint_buffer = buffer.MeanStdBuffer(shape=(8,))
     checkpoint_buffer.push(np.ones(8,))
     checkpoint_state = {
         algorithm.PARAMS_TO_EVAL: np.zeros((13,)),
@@ -146,7 +145,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
     )
 
   def test_restore_state_from_checkpoint_with_archive(self):
-    checkpoint_buffer = normalizer.MeanStdBuffer(shape=(8,))
+    checkpoint_buffer = buffer.MeanStdBuffer(shape=(8,))
     checkpoint_buffer.push(
         np.ones(
             8,
@@ -160,11 +159,11 @@ class PyribsAlgorithmTest(absltest.TestCase):
         qd_score_offset=0,
         extra_fields={
             pyribs_algorithm._OBS_NORM_MEAN: (
-                buffer_state[normalizer.MEAN].size,
+                buffer_state[buffer.MEAN].size,
                 np.float32,
             ),
             pyribs_algorithm._OBS_NORM_STD: (
-                buffer_state[normalizer.STD].size,
+                buffer_state[buffer.STD].size,
                 np.float32,
             ),
             pyribs_algorithm._OBS_NORM_N: ((), np.int32),
@@ -210,10 +209,10 @@ class PyribsAlgorithmTest(absltest.TestCase):
             params_evaluated=np.ones((13,)),
             value=1,
             obs_norm_buffer_data={
-                normalizer.N: 1,
-                normalizer.STD: np.ones((8,)),
-                normalizer.MEAN: np.ones((8,)),
-                normalizer.UNNORM_VAR: np.ones((8,)),
+                buffer.N: 1,
+                buffer.STD: np.ones((8,)),
+                buffer.MEAN: np.ones((8,)),
+                buffer.UNNORM_VAR: np.ones((8,)),
             },
             metrics={'x': 1, 'y': 10},
         ),
@@ -221,10 +220,10 @@ class PyribsAlgorithmTest(absltest.TestCase):
             params_evaluated=np.ones((13,) * 2),
             value=2,
             obs_norm_buffer_data={
-                normalizer.N: 2,
-                normalizer.STD: np.ones((8,)) * 2,
-                normalizer.MEAN: np.ones((8,)) * 2,
-                normalizer.UNNORM_VAR: np.ones((8,)) * 2,
+                buffer.N: 2,
+                buffer.STD: np.ones((8,)) * 2,
+                buffer.MEAN: np.ones((8,)) * 2,
+                buffer.UNNORM_VAR: np.ones((8,)) * 2,
             },
             metrics={'x': 2, 'y': 20},
         ),

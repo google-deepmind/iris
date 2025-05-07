@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from iris import normalizer
+from iris import buffer
 from iris.algorithms import ars_algorithm
 from iris.workers import worker_util
 import numpy as np
@@ -85,7 +85,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
         top_percentage=1,
         orthogonal_suggestions=True,
         quasirandom_suggestions=True,
-        obs_norm_data_buffer=normalizer.MeanStdBuffer()
+        obs_norm_data_buffer=buffer.MeanStdBuffer()
         if expected_obs_norm_state is not None
         else None,
         random_seed=7,

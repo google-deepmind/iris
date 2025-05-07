@@ -18,7 +18,7 @@ from collections.abc import Sequence
 
 from absl import app
 from absl import flags
-from iris import normalizer
+from iris import buffer
 from iris.algorithms import multi_agent_ars_algorithm
 
 _NUM_AGENTS = flags.DEFINE_integer('num_agents', 2, 'Number of agents.')
@@ -43,7 +43,7 @@ def split_and_save_checkpoint(
       top_percentage=1,
       orthogonal_suggestions=True,
       quasirandom_suggestions=True,
-      obs_norm_data_buffer=normalizer.MeanStdBuffer()
+      obs_norm_data_buffer=buffer.MeanStdBuffer()
       if has_obs_norm_data_buffer
       else None,
       agent_keys=[str(i) for i in range(num_agents)],

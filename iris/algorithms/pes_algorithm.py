@@ -16,7 +16,7 @@
 
 from typing import Any, Dict, Optional, Sequence
 
-from iris import normalizer
+from iris import buffer
 from iris.algorithms import algorithm
 from iris.algorithms import stateless_perturbation_generators
 from iris.workers import worker_util
@@ -26,16 +26,18 @@ import numpy as np
 class PersistentES(algorithm.BlackboxAlgorithm):
   """Augmented random search algorithm for blackbox optimization."""
 
-  def __init__(self,
-               std: float,
-               step_size: float,
-               top_percentage: float = 1.0,
-               orthogonal_suggestions: bool = False,
-               quasirandom_suggestions: bool = False,
-               top_sort_type: str = "max",
-               obs_norm_data_buffer: Optional[normalizer.MeanStdBuffer] = None,
-               partial_rollout_length: Optional[int] = 5,
-               **kwargs) -> None:
+  def __init__(
+      self,
+      std: float,
+      step_size: float,
+      top_percentage: float = 1.0,
+      orthogonal_suggestions: bool = False,
+      quasirandom_suggestions: bool = False,
+      top_sort_type: str = "max",
+      obs_norm_data_buffer: Optional[buffer.MeanStdBuffer] = None,
+      partial_rollout_length: Optional[int] = 5,
+      **kwargs
+  ) -> None:
     """Initializes the augmented random search algorithm.
 
     Args:

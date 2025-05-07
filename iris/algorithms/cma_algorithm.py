@@ -17,7 +17,7 @@
 from typing import Any, Dict, Optional, Sequence
 
 import cma
-from iris import normalizer
+from iris import buffer
 from iris.algorithms import algorithm
 from iris.workers import worker_util
 import numpy as np
@@ -34,11 +34,13 @@ class CMAES(algorithm.BlackboxAlgorithm):
      to implement the algorithm.
   """
 
-  def __init__(self,
-               std: float = 0.3,
-               bounds: Sequence[float] = (-1, 1),
-               obs_norm_data_buffer: Optional[normalizer.MeanStdBuffer] = None,
-               **kwargs) -> None:
+  def __init__(
+      self,
+      std: float = 0.3,
+      bounds: Sequence[float] = (-1, 1),
+      obs_norm_data_buffer: Optional[buffer.MeanStdBuffer] = None,
+      **kwargs
+  ) -> None:
     """Initializes the augmented random search algorithm.
 
     Args:
