@@ -19,6 +19,7 @@ from concurrent import futures
 import dataclasses
 import os
 import pathlib
+import pickle as pkl
 import threading
 import time
 from typing import Any, Callable
@@ -155,6 +156,7 @@ class Coordinator:
     self._evaluation_in_progress = False
     self._evaluator_lock = threading.Lock()
     self._evaluation_in_progress = False
+    logging.set_verbosity(10)
 
   def reset(self, suggestions: Sequence[Mapping[str, Any]], iteration: int):
     self._iteration = iteration
@@ -194,7 +196,10 @@ class Coordinator:
       worker_kwargs["training_state"] = self._training_state
     if self._send_iteration_to_workers:
       worker_kwargs["iteration"] = self._iteration
-    future = self._workers[worker_id].futures.work(**worker_kwargs)
+    worker_kwargs = {k: pkl.dumps(v) for k, v in worker_kwargs.items()}
+    future = self._workers[worker_id].futures.work_with_serialized_inputs(
+        **worker_kwargs
+    )
     callback = self._create_future_callback(
         worker_id, suggestion_id, self._iteration
     )
@@ -475,11 +480,13 @@ class Coordinator:
     return None, 0
 
   def evaluate(
-      self, iteration: int, suggestions: Sequence[Mapping[str, Any]]
+      self, iteration: int, suggestions: Sequence[Mapping[str, Any]] | bytes
   ) -> None:
     """Evaluate given state."""
     with self._evaluator_lock:
       self._evaluation_in_progress = True
+      if isinstance(suggestions, bytes):
+        suggestions = pkl.loads(suggestions)
       self.reset(suggestions, iteration)
       self._get_evals()
       self._log_progress()
@@ -498,11 +505,12 @@ class Coordinator:
           )
       self._evaluation_in_progress = False
 
-  def save(self, iteration: int, state: dict[str, Any]) -> None:
+  def save(self, iteration: int, state: dict[str, Any] | bytes) -> None:
     """Save checkpoint."""
     with self._evaluator_lock:
       self._evaluation_in_progress = True
       self.reset([], iteration)
+      state = pkl.loads(state) if isinstance(state, bytes) else state
       self._save_checkpoint(state)
       self._evaluation_in_progress = False
 
@@ -524,7 +532,7 @@ class Coordinator:
     if iteration % self._save_rate == 0:
       if self._evaluator is not None:
         self._evaluator.futures.save(
-            iteration=iteration, state=self._algorithm.state
+            iteration=iteration, state=pkl.dumps(self._algorithm.state)
         )
       else:
         self.save(iteration=iteration, state=self._algorithm.state)
@@ -547,7 +555,7 @@ class Coordinator:
       # hardware.
       if self._evaluator is not None:
         self._evaluator.futures.evaluate(
-            iteration=iteration, suggestions=suggestions
+            iteration=iteration, suggestions=pkl.dumps(suggestions)
         )
       else:
         self.evaluate(iteration=iteration, suggestions=suggestions)

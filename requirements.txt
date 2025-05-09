@@ -6,5 +6,4 @@ scipy>=1.15.2
 # Distributed systems libraries.
 # NOTE: Requires tensorflow~=2.8.0 to avoid proto issues.
 dm-launchpad[tensorflow]
-dm-reverb[tensorflow]
 ml-collections>=0.1.1

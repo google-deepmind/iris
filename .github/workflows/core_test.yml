@@ -33,6 +33,6 @@ jobs:
       - name: Print installed dependencies
         run: |
           pip freeze
-      - name: Test with pytest  # TODO(team): Fix tensorflow version conflict.
+      - name: Test with pytest
         run: |
-          # pytest -n auto iris/coordinator_test.py
+          pytest -n auto iris/coordinator_test.py

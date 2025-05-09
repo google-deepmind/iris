@@ -15,11 +15,11 @@
 import glob
 import os
 import pathlib
+import pickle as pkl
 import tempfile  # pylint: disable=unused-import
 import time
 from typing import cast
 
-from absl.testing import absltest
 from iris import checkpoint_util
 from iris import coordinator
 from iris.algorithms import ars_algorithm
@@ -31,14 +31,14 @@ import numpy as np
 from absl.testing import absltest
 
 
-_TEST_CHECKPOINT = "./testdata/test_checkpoint.pkl"
+_TEST_CHECKPOINT = "iris/testdata/test_checkpoint.pkl"
 
 
 def make_bb_program(
     num_workers: int,
     num_eval_workers: int,
     config: config_dict.ConfigDict,
-    logdir: absltest._TempDir | str,
+    logdir: pathlib.Path,
     experiment_name: str,
     warmstartdir: str | None,
     random_seed: int = 1,
@@ -68,7 +68,6 @@ def make_bb_program(
       worker_handle.set_client_kwargs()
       workers.append(worker_handle)
 
-  logdir = pathlib.Path(logdir)
   if warmstartdir:
     warmstartdir = pathlib.Path(warmstartdir)
   algo = algo_config["algorithm_class"](**algo_config["algorithm_args"])
@@ -163,7 +162,7 @@ class CoordinatorTest(absltest.TestCase):
         num_workers=4,
         num_eval_workers=4,
         config=config,
-        logdir=self.logdir,
+        logdir=pathlib.Path(self.logdir),
         warmstartdir=_TEST_CHECKPOINT,
         experiment_name="test",
     )
@@ -194,22 +193,22 @@ class CoordinatorTest(absltest.TestCase):
     futures = []
     futures.append(
         self.coordinator._evaluator.futures.evaluate(
-            iteration=0, suggestions=suggestions
+            iteration=0, suggestions=pkl.dumps(suggestions)
         )
     )
     futures.append(
         self.coordinator._evaluator.futures.save(
-            iteration=0, state=self.coordinator._algorithm.state
+            iteration=0, state=pkl.dumps(self.coordinator._algorithm.state)
         )
     )
     futures.append(
         self.coordinator._evaluator.futures.evaluate(
-            iteration=10, suggestions=suggestions
+            iteration=10, suggestions=pkl.dumps(suggestions)
         )
     )
     futures.append(
         self.coordinator._evaluator.futures.save(
-            iteration=10, state=self.coordinator._algorithm.state
+            iteration=10, state=pkl.dumps(self.coordinator._algorithm.state)
         )
     )
     for future in futures:

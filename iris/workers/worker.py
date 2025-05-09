@@ -15,6 +15,7 @@
 """Worker class for evaluating a blackbox function."""
 
 import abc
+import pickle as pkl
 from typing import Any
 
 from iris.workers import worker_util
@@ -31,6 +32,15 @@ class Worker(abc.ABC):
     self._worker_id = worker_id
     self._worker_type = worker_type
     self._init_state = {}
+
+  def work_with_serialized_inputs(
+      self, **kwargs
+  ) -> worker_util.EvaluationResult:
+    """Runs the blackbox function on input vars."""
+    unpacked_kwargs = {}
+    for k, v in kwargs.items():
+      unpacked_kwargs[k] = pkl.loads(v) if isinstance(v, bytes) else v
+    return self.work(**unpacked_kwargs)
 
   @abc.abstractmethod
   def work(
