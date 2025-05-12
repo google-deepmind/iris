@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Utilities for interacting with BBv2 checkpoints."""
+"""Utilities for interacting with Iris checkpoints."""
 
 import datetime
 import pathlib

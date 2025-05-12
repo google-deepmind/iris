@@ -21,11 +21,11 @@ from typing import Any, Callable, Dict, Mapping, Optional, Union
 from absl import logging
 import gym
 from iris import normalizer
+from iris import video_recorder
 from iris.policies import base_policy
 from iris.workers import worker
 from iris.workers import worker_util
 import numpy as np
-from tf_agents.google.utils import mp4_video_recorder
 
 
 workerlock = threading.Lock()
@@ -250,7 +250,7 @@ class RLWorker(worker.Worker):
 
     video = None
     if record_video:
-      video = mp4_video_recorder.Mp4VideoRecorder(video_path, video_framerate)
+      video = video_recorder.VideoRecorder(video_path, video_framerate)
 
     rewards = []
     metrics = collections.defaultdict(list)
