@@ -18,12 +18,12 @@ import collections
 from typing import Mapping, Optional
 
 from absl import logging
+from iris import video_recorder
 from iris.workers import rl_worker
 from iris.workers import worker_util
 import numpy as np
 import reverb
 from tf_agents.environments import gym_wrapper
-from tf_agents.google.utils import mp4_video_recorder
 from tf_agents.replay_buffers import reverb_utils
 from tf_agents.specs import tensor_spec
 from tf_agents.trajectories import policy_step
@@ -118,7 +118,7 @@ class RLRepresentationWorker(rl_worker.RLWorker):
 
     video = None
     if record_video:
-      video = mp4_video_recorder.Mp4VideoRecorder(video_path, video_framerate)
+      video = video_recorder.VideoRecorder(video_path, video_framerate)
 
     reward = 0.0
     metrics = collections.defaultdict(float)

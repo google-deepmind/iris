@@ -20,10 +20,12 @@ import tempfile  # pylint: disable=unused-import
 import time
 from typing import cast
 
+import gym
 from iris import checkpoint_util
 from iris import coordinator
 from iris.algorithms import ars_algorithm
-from iris.workers import simple_worker
+from iris.policies import nn_policy
+from iris.workers import rl_worker
 import launchpad as lp
 from ml_collections import config_dict
 import numpy as np
@@ -32,6 +34,29 @@ from absl.testing import absltest
 
 
 _TEST_CHECKPOINT = "iris/testdata/test_checkpoint.pkl"
+
+
+class TestEnv(gym.Env):
+
+  def __init__(self):
+    self._ac_dim = 6
+    self._ob_dim = 14
+    self.action_space = gym.spaces.Box(
+        -1 * np.ones(self._ac_dim), np.ones(self._ac_dim), dtype=np.float32
+    )
+    self.observation_space = gym.spaces.Box(
+        -1 * np.ones(self._ob_dim), np.ones(self._ob_dim), dtype=np.float32
+    )
+
+  def step(self, action):
+    del action
+    return np.zeros(self._ob_dim), 1.0, False, {}
+
+  def reset(self):
+    return np.zeros(self._ob_dim)
+
+  def render(self, mode: str = "rgb_array"):
+    return np.zeros((16, 16))
 
 
 def make_bb_program(
@@ -129,14 +154,17 @@ class CoordinatorTest(absltest.TestCase):
                     eval_rate=1,
                     num_iterations=400,
                     num_evals_per_suggestion=1,
+                    record_video_during_eval=True,
                 )
             ),
             worker=config_dict.ConfigDict(
                 dict(
-                    worker_class=simple_worker.SimpleWorker,
+                    worker_class=rl_worker.RLWorker,
                     worker_args=dict(
-                        blackbox_function=np.sum,
-                        initial_params=np.zeros(shape=(10,)),
+                        env=TestEnv,
+                        policy=nn_policy.FullyConnectedNeuralNetworkPolicy,
+                        policy_args=dict(hidden_layer_sizes=[64, 64]),
+                        rollout_length=20,
                     ),
                 )
             ),
