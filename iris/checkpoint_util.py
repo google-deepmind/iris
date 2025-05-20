@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Utilities for interacting with BBv2 checkpoints."""
+"""Utilities for interacting with Iris checkpoints."""
 
 import datetime
 import pathlib
@@ -24,6 +24,9 @@ from absl import logging
 
 def load_checkpoint_state_oss(path: str | pathlib.Path) -> dict[str, Any]:
   """Loads a checkpoint state from a given path."""
+  path = pathlib.Path(path)
+  if path.is_dir():
+    path = path.joinpath("checkpoint.pkl")
   try:
     with open(path, "rb") as f:
       state = pkl.load(f)
@@ -37,6 +40,9 @@ load_checkpoint_state = load_checkpoint_state_oss
 
 def save_checkpoint_oss(path: str | pathlib.Path, state: dict[str, Any]):
   """Saves a checkpoint state to a given path."""
+  path = pathlib.Path(path)
+  path.mkdir(parents=True, exist_ok=True)
+  path = path.joinpath("checkpoint.pkl")
   with open(path, "wb") as f:
     pkl.dump(state, f)
 

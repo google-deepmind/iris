@@ -438,7 +438,7 @@ class Coordinator:
       state = checkpoint_util.load_checkpoint_state(logdir.as_posix())
       iteration = 0  # No iteration information is extracted
       return state, iteration
-    except ValueError:
+    except (ValueError, FileNotFoundError):
       logging.warning(
           "Failed to load directly as a checkpoint, try searching subfolders"
           " with checkpoints."
@@ -495,7 +495,7 @@ class Coordinator:
             "iteration_{:04d}".format(self._iteration)
         )
         for i in range(min(self._num_videos, len(self._workers))):
-          self._workers[i].work(
+          worker_kwargs = dict(
               **suggestions[0],
               record_video=True,
               video_framerate=self._video_framerate,
@@ -503,6 +503,8 @@ class Coordinator:
                   video_path.joinpath(f"video_{i}.{self._video_extension}")
               ),
           )
+          worker_kwargs = {k: pkl.dumps(v) for k, v in worker_kwargs.items()}
+          self._workers[i].work_with_serialized_inputs(**worker_kwargs)
       self._evaluation_in_progress = False
 
   def save(self, iteration: int, state: dict[str, Any] | bytes) -> None:

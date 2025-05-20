@@ -33,6 +33,15 @@ jobs:
       - name: Print installed dependencies
         run: |
           pip freeze
-      - name: Test with pytest
+      - name: Test simple worker with pytest
         run: |
           pytest -n auto iris/coordinator_test.py
+      - name: Install RL dependencies
+        run: |
+          pip install -e .[rl]
+      - name: Print installed dependencies
+        run: |
+          pip freeze
+      - name: Test RL worker with pytest
+        run: |
+          pytest -n auto iris/coordinator_rl_test.py

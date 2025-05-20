@@ -18,10 +18,10 @@ import collections
 from typing import Any, Dict, Mapping, Optional
 
 from absl import logging
+from iris import video_recorder
 from iris.workers import rl_worker
 from iris.workers import worker_util
 import numpy as np
-from tf_agents.google.utils import mp4_video_recorder
 
 
 class MultiAgentRLWorker(rl_worker.RLWorker):
@@ -72,7 +72,7 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
 
     video = None
     if record_video:
-      video = mp4_video_recorder.Mp4VideoRecorder(video_path, video_framerate)
+      video = video_recorder.VideoRecorder(video_path, video_framerate)
 
     reward_dict = collections.defaultdict(float)
     agent_1 = None
