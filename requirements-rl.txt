@@ -1,4 +1,2 @@
 # Packages required for Reinforcement Learning.
-
-# Environment packages.
 gym

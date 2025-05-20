@@ -18,6 +18,16 @@ import itertools
 import setuptools
 
 
+def _get_version():
+  with open('iris/__init__.py') as fp:
+    for line in fp:
+      if line.startswith('__version__'):
+        g = {}
+        exec(line, g)  # pylint: disable=exec-used
+        return g['__version__']
+    raise ValueError('`__version__` not defined in `iris/__init__.py`')
+
+
 def _strip_comments_from_line(s: str) -> str:
   """Parses a line of a requirements.txt file."""
   requirement, *_ = s.split('#')
@@ -37,7 +47,6 @@ def _parse_requirements(requirements_txt_path: str) -> list[str]:
 extras_require = {
     'rl': _parse_requirements('requirements-rl.txt'),
     'extras': _parse_requirements('requirements-extras.txt'),
-    'test': _parse_requirements('requirements-test.txt'),
 }
 
 extras_require['all'] = list(
@@ -46,7 +55,7 @@ extras_require['all'] = list(
 
 setuptools.setup(
     name='google-iris',
-    version='0.0.1.alpha',
+    version=_get_version(),
     description='Iris',
     author='Iris Team',
     author_email='jaindeepali@google.com',
