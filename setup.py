@@ -60,7 +60,9 @@ setuptools.setup(
     author='Iris Team',
     author_email='jaindeepali@google.com',
     install_requires=_parse_requirements('requirements.txt'),
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_namespace_packages(
+        include=['iris*'], exclude=['*_test.py']
+    ),
     extras_require=extras_require,
     python_requires='>=3.10',
 )
