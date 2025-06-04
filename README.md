@@ -1,3 +1,6 @@
+
+<img align="left" width="100" height="100" src="assets/iris-logo.svg" alt="Iris Logo">
+
 # Iris: Synchronous and Distributed Blackbox Optimization at Scale
 [![Continuous Integration](https://github.com/google-deepmind/iris/actions/workflows/core_test.yml/badge.svg)](https://github.com/google-deepmind/iris/actions?query=branch%3Amain)
 
@@ -7,14 +10,20 @@ optimization at scale. It is meant primarily to train large neural networks with
 evolutionary methods, but can be applied to optimize any high dimensional
 blackbox function.
 
+## Installation
+
+```bash
+
+pip install google-iris==0.0.2a0
+```
+
 ## Getting Started
 
 To launch a local optimization, run:
 
 ```bash
-cd iris
 
-python3 -m launch \
+python3 -m iris.launch \
 --lp_launch_type=local_mp \
 --experiment_name=iris_example \
 --config=configs/simple_example_config.py \
