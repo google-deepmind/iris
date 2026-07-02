@@ -207,10 +207,10 @@ class RepresentationLearner(object):
     else:
       self.policy = policy
 
-    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)
-    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)
+    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)  # pyrefly: ignore[bad-argument-type]
+    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
     time_step_spec = ts.time_step_spec(observation_spec=obs_spec)
-    policy_step_spec = policy_step.PolicyStep(action=action_spec)
+    policy_step_spec = policy_step.PolicyStep(action=action_spec)  # pyrefly: ignore[missing-argument]
     collect_data_spec = trajectory.from_transition(
         time_step_spec, policy_step_spec, time_step_spec
     )
@@ -293,7 +293,7 @@ class RepresentationLearner(object):
     if self.global_step % self.reverb_checkpoint_period == 0:
       logging.info("Start checkpointing reverb data.")
       self.reverb_rb.py_client.checkpoint()
-    print("train/loss: {}".format(np.mean(loss.numpy())))
+    print("train/loss: {}".format(np.mean(loss.numpy())))  # pyrefly: ignore[unbound-name]
 
   @tf.function
   def train_single_step(self, obs, reward, action, discount):
@@ -325,14 +325,14 @@ class RepresentationLearner(object):
   @tf.function
   def rollout(self, obs, actions):
     """Latent rollout."""
-    s, _ = self.policy.h_model(obs)
+    s, _ = self.policy.h_model(obs)  # pyrefly: ignore[not-callable]
     outputs = []
     for i in range(self._rollout_length):
-      p, v = self.policy.f_model(s)
-      u_next, s_next = self.policy.g_model([s, actions[:, i, ...]])
+      p, v = self.policy.f_model(s)  # pyrefly: ignore[not-callable]
+      u_next, s_next = self.policy.g_model([s, actions[:, i, ...]])  # pyrefly: ignore[not-callable]
       outputs.append((p, v, u_next, s))
       s = s_next
-    p, v = self.policy.f_model(s)
+    p, v = self.policy.f_model(s)  # pyrefly: ignore[not-callable]
     outputs.append((p, v, None, s))
     return outputs
 
@@ -368,11 +368,11 @@ class RepresentationLearner(object):
       # Latent state (from visual + other observations) for the first time step
       hx = latent_traj[0][-1]
       # Latent state (from visual observations) for the last time step
-      _, hy_vision = self.policy.h_model(obs_k)
+      _, hy_vision = self.policy.h_model(obs_k)  # pyrefly: ignore[not-callable]
       # A trick from https://arxiv.org/abs/2011.10566
       hy_vision = tf.stop_gradient(hy_vision)
-      zx = self.policy.px_model(hx)
-      zy = self.policy.py_model(hy_vision)
+      zx = self.policy.px_model(hx)  # pyrefly: ignore[not-callable]
+      zy = self.policy.py_model(hy_vision)  # pyrefly: ignore[not-callable]
       iyz, _, _ = infonce(zx, zy, temperature=0.1)
       loss_pi = -iyz
 
@@ -406,11 +406,11 @@ class RepresentationLearner(object):
         loss_v += self.distributional_value_loss(
             value_logits=z,
             value_supports=self.supports,
-            target_value_logits=last_value_distribution,
-            target_value_supports=target_value_supports[i],
+            target_value_logits=last_value_distribution,  # pyrefly: ignore[unbound-name]
+            target_value_supports=target_value_supports[i],  # pyrefly: ignore[unbound-name]
         )
         vd = tf.nn.softmax(z)
-        pred_value_sum += tf.reduce_sum(vd * self.supports[None, ...], axis=-1)
+        pred_value_sum += tf.reduce_sum(vd * self.supports[None, ...], axis=-1)  # pyrefly: ignore[unbound-name]
       # reward loss
       loss_r += tf.reduce_sum(
           tf.math.square(u_next - tf.stop_gradient(rewards[:, i : i + 1])), -1
@@ -424,9 +424,9 @@ class RepresentationLearner(object):
         "loss_pi": tf.reduce_mean(loss_pi),
     }
     if self.use_value_loss:
-      metrics["value"] = tf.reduce_mean(pred_value_sum) / self._rollout_length
+      metrics["value"] = tf.reduce_mean(pred_value_sum) / self._rollout_length  # pyrefly: ignore[unbound-name]
     if self.use_pi_loss:
-      metrics["iyz"] = tf.reduce_mean(iyz)
+      metrics["iyz"] = tf.reduce_mean(iyz)  # pyrefly: ignore[unbound-name]
     return loss, metrics
 
   def distributional_value_loss(
@@ -455,7 +455,7 @@ def flatten_nested(space, x):
   """Flatten nested."""
   if isinstance(space, spaces.Box):
     x = np.asarray(x, dtype=np.float32)
-    inner_dims = list(space.shape)
+    inner_dims = list(space.shape)  # pyrefly: ignore[bad-argument-type]
     outer_dims = list(x.shape)[: -len(inner_dims)]
     x = np.reshape(x, outer_dims + [np.prod(inner_dims)])
     return x

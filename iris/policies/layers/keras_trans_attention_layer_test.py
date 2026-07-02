@@ -29,7 +29,7 @@ class FavorMaskingAttentionTest(absltest.TestCase):
         batch_input_shape=(2, 3, 4), dtype="float", name="keys")
     value_layer = tf.keras.layers.Input(
         batch_input_shape=(2, 3, 4), dtype="float", name="values")
-    output_layer = keras_trans_attention_layer.FavorTransAttention(
+    output_layer = keras_trans_attention_layer.FavorTransAttention(  # pyrefly: ignore[not-callable]
         kernel_transformation=favor.relu_kernel_transformation)(
             query_layer, key_layer, value_layer)
     model = tf.keras.models.Model(

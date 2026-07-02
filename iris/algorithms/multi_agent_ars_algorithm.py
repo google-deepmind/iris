@@ -110,7 +110,7 @@ class MultiAgentAugmentedRandomSearch(ars_algorithm.AugmentedRandomSearch):
           )
       }
       if self._obs_norm_data_buffer is not None:
-        duplicated_state["obs_norm_state"] = {}
+        duplicated_state["obs_norm_state"] = {}  # pyrefly: ignore[bad-assignment]
         duplicated_state["obs_norm_state"]["mean"] = np.tile(
             new_state["obs_norm_state"]["mean"], self._num_agents
         )
@@ -193,10 +193,10 @@ class MultiAgentAugmentedRandomSearch(ars_algorithm.AugmentedRandomSearch):
       neg_eval_results: Sequence[worker_util.EvaluationResult],
   ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     pos_evals = np.array(
-        [r.metrics[f"reward_{agent_key}"] for r in pos_eval_results]
+        [r.metrics[f"reward_{agent_key}"] for r in pos_eval_results]  # pyrefly: ignore[unsupported-operation]
     )
     neg_evals = np.array(
-        [r.metrics[f"reward_{agent_key}"] for r in neg_eval_results]
+        [r.metrics[f"reward_{agent_key}"] for r in neg_eval_results]  # pyrefly: ignore[unsupported-operation]
     )
     if self._top_sort_type == "max":
       max_evals = np.max(np.vstack([pos_evals, neg_evals]), axis=0)

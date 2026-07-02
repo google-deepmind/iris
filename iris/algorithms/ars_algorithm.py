@@ -189,7 +189,7 @@ class AugmentedRandomSearch(algorithm.BlackboxAlgorithm):
         param_suggestions = self._np_random_state.normal(
             0, 1, (self._num_suggestions, dimensions)
         )
-      self._last_std_used = self._std
+      self._last_std_used = self._std  # pyrefly: ignore[bad-assignment]
       if callable(self._std):
         self._last_std_used = self._std(self._iteration)
       param_suggestions = np.vstack([
@@ -213,7 +213,7 @@ class AugmentedRandomSearch(algorithm.BlackboxAlgorithm):
   def _get_state(self) -> Dict[str, Any]:
     state = {"params_to_eval": self._opt_params}
     if self._obs_norm_data_buffer is not None:
-      state["obs_norm_state"] = self._obs_norm_data_buffer.state
+      state["obs_norm_state"] = self._obs_norm_data_buffer.state  # pyrefly: ignore[bad-assignment]
     return state
 
   @state.setter

@@ -181,7 +181,7 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
           buffer_lib.STD: elite[_OBS_NORM_STD],
       }
     else:
-      param_suggestions = self._scheduler.ask()
+      param_suggestions = self._scheduler.ask()  # pyrefly: ignore[missing-attribute]
       buffer = self._obs_norm_data_buffer.state
 
     return [
@@ -202,12 +202,12 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
     obs_norm_std = []
     obs_norm_mean = []
     for result in eval_results:
-      self._obs_norm_data_buffer.merge(result.obs_norm_buffer_data)
+      self._obs_norm_data_buffer.merge(result.obs_norm_buffer_data)  # pyrefly: ignore[bad-argument-type]
       objective.append(result.value)
-      measures.append([result.metrics[name] for name in self._measure_names])
-      obs_norm_n.append(result.obs_norm_buffer_data[buffer_lib.N])
-      obs_norm_std.append(result.obs_norm_buffer_data[buffer_lib.STD])
-      obs_norm_mean.append(result.obs_norm_buffer_data[buffer_lib.MEAN])
+      measures.append([result.metrics[name] for name in self._measure_names])  # pyrefly: ignore[unsupported-operation]
+      obs_norm_n.append(result.obs_norm_buffer_data[buffer_lib.N])  # pyrefly: ignore[unsupported-operation]
+      obs_norm_std.append(result.obs_norm_buffer_data[buffer_lib.STD])  # pyrefly: ignore[unsupported-operation]
+      obs_norm_mean.append(result.obs_norm_buffer_data[buffer_lib.MEAN])  # pyrefly: ignore[unsupported-operation]
 
     # Store the state of the obs_norm_buffer for each solution so that it can be
     # reproduced later when evaluating the policy, similar to other algorithms
@@ -218,7 +218,7 @@ class PyRibsAlgorithm(algorithm.BlackboxAlgorithm):
         _OBS_NORM_N: obs_norm_n,
     }
 
-    self._scheduler.tell(
+    self._scheduler.tell(  # pyrefly: ignore[missing-attribute]
         objective=objective,
         measures=measures,
         **extra_fields,

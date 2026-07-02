@@ -40,7 +40,7 @@ class PyGloveRLWorker(rl_worker.RLWorker):
         self._policy.dna_spec  # pytype: disable=attribute-error
     )
 
-  def work(
+  def work(  # pyrefly: ignore[bad-override]
       self, metadata: Optional[str] = None, **kwargs
   ) -> worker_util.EvaluationResult:
     if metadata:

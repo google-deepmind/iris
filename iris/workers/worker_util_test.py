@@ -24,7 +24,7 @@ class WorkerUtilTest(absltest.TestCase):
     result1 = worker_util.EvaluationResult(
         params_evaluated=np.zeros(6),
         value=np.float64(5.0),
-        obs_norm_buffer_data={
+        obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
             'n': 5,
             'mean': np.zeros(7),
             'unnorm_var': np.ones(7),
@@ -35,7 +35,7 @@ class WorkerUtilTest(absltest.TestCase):
     result2 = worker_util.EvaluationResult(
         params_evaluated=np.zeros(6),
         value=np.float64(10.0),
-        obs_norm_buffer_data={
+        obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
             'n': 10,
             'mean': np.ones(7),
             'unnorm_var': 2 * np.ones(7),
@@ -44,7 +44,7 @@ class WorkerUtilTest(absltest.TestCase):
         metrics={'extra_metric': np.float64(3.0)},
     )
     merged_result = worker_util.merge_eval_results([result1, result2])
-    mean_value = np.mean([result1.value, result2.value])
+    mean_value = np.mean([result1.value, result2.value])  # pyrefly: ignore[no-matching-overload]
     buffer_data_mean = 10 * np.ones(7) / 15.0
     self.assertEqual(merged_result.value, mean_value)
     self.assertIsNotNone(merged_result.obs_norm_buffer_data)
@@ -52,7 +52,7 @@ class WorkerUtilTest(absltest.TestCase):
     np.testing.assert_array_equal(
         merged_result.obs_norm_buffer_data['mean'], buffer_data_mean
     )
-    self.assertEqual(merged_result.metrics['extra_metric'], 2.0)
+    self.assertEqual(merged_result.metrics['extra_metric'], 2.0)  # pyrefly: ignore[unsupported-operation]
 
   def test_merge_empty(self):
     with self.assertRaisesRegex(ValueError, '(?=.*empty)(?=.*merge)'):

@@ -197,7 +197,7 @@ class MeanStdBuffer(Buffer):
   @property
   def _var(self) -> np.ndarray:
     return (
-        self._data[UNNORM_VAR] / (self._data[N] - 1)
+        self._data[UNNORM_VAR] / (self._data[N] - 1)  # pyrefly: ignore[bad-return]
         if self._data[N] > 1
         else np.ones_like(self._data[MEAN])
     )

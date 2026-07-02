@@ -103,7 +103,7 @@ class CMAES(algorithm.BlackboxAlgorithm):
     # Update the observation buffer
     if self._obs_norm_data_buffer is not None:
       for r in filtered_eval_results:
-        self._obs_norm_data_buffer.merge(r.obs_norm_buffer_data)
+        self._obs_norm_data_buffer.merge(r.obs_norm_buffer_data)  # pyrefly: ignore[bad-argument-type]
 
   def get_param_suggestions(self,
                             evaluate: bool = False
@@ -141,7 +141,7 @@ class CMAES(algorithm.BlackboxAlgorithm):
   def _get_state(self) -> Dict[str, Any]:
     state = {"params_to_eval": self._opt_params}
     if self._obs_norm_data_buffer is not None:
-      state["obs_norm_state"] = self._obs_norm_data_buffer.state
+      state["obs_norm_state"] = self._obs_norm_data_buffer.state  # pyrefly: ignore[bad-assignment]
     return state
 
   @state.setter

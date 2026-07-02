@@ -169,7 +169,7 @@ class LearnableAugmentedRandomSearch(ars_algorithm.AugmentedRandomSearch):
         param_suggestions = self._np_random_state.normal(
             0, 1, (self._num_suggestions, dimensions)
         )
-      self._last_std_used = self._std
+      self._last_std_used = self._std  # pyrefly: ignore[bad-assignment]
       param_suggestions = np.vstack([
           self._opt_params,
           self._opt_params + self._last_std_used * param_suggestions,
@@ -194,7 +194,7 @@ class LearnableAugmentedRandomSearch(ars_algorithm.AugmentedRandomSearch):
     model_input = np.concatenate([[self._iteration], rewards])
 
     if self._tree_weights is None:
-      self._model_state = self._restore_state_from_checkpoint(self._model_path)
+      self._model_state = self._restore_state_from_checkpoint(self._model_path)  # pyrefly: ignore[bad-argument-type]
       self._tree_weights = self._model.init(
           jax.random.PRNGKey(seed=self._seed), model_input, self._model_state
       )

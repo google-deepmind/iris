@@ -97,7 +97,7 @@ class PyGloveAlgorithm(algorithm.BlackboxAlgorithm):
 
     for metadata in metadata_list:
       suggestion = {"params_to_eval": np.empty((), dtype=np.float64)}
-      suggestion["metadata"] = metadata
+      suggestion["metadata"] = metadata  # pyrefly: ignore[bad-assignment]
       vanilla_suggestions.append(suggestion)
 
     return vanilla_suggestions

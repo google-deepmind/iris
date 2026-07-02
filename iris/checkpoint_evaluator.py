@@ -49,7 +49,7 @@ def main(argv):
     worker_config.worker_args.write_to_replay = False
   worker = worker_config["worker_class"](
       worker_id=0, **worker_config["worker_args"])
-  state = checkpoint_util.load_checkpoint_state(_CHECKPOINT_FILE.value)
+  state = checkpoint_util.load_checkpoint_state(_CHECKPOINT_FILE.value)  # pyrefly: ignore[bad-argument-type]
   returns = []
   times = []
   metric_dict = collections.defaultdict(list)
@@ -61,7 +61,7 @@ def main(argv):
         gfile.MakeDirs(
             _VIDEO_PATH.value, mode=gfile.LEGACY_GROUP_WRITABLE_WORLD_READABLE
         )
-      video_path = os.path.join(_VIDEO_PATH.value, "video_" + str(i) + ".mp4")
+      video_path = os.path.join(_VIDEO_PATH.value, "video_" + str(i) + ".mp4")  # pyrefly: ignore[no-matching-overload]
       result = worker.work(
           **state,
           enable_logging=True,

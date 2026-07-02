@@ -224,7 +224,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
     self.assertEqual(algo._num_agents, num_agents)
     init_state = {'init_params': np.array([10.0, 10.0])}
     if state['obs_norm_state'] is not None:
-      init_state['obs_norm_buffer_data'] = {
+      init_state['obs_norm_buffer_data'] = {  # pyrefly: ignore[bad-assignment]
           'mean': np.asarray([0.0, 0.0]),
           'std': np.asarray([1.0, 1.0]),
           'n': 0,

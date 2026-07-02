@@ -476,7 +476,7 @@ class Coordinator:
           int(checkpoint_paths_sorted[0].split("_")[-1]) + 1
       )
       if latest_checkpoint_num_iterations > max_allowed_iteration_for_restart:
-        raise checkpoint_load_error
+        raise checkpoint_load_error  # pyrefly: ignore[bad-raise]
     return None, 0
 
   def evaluate(

@@ -102,7 +102,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
     # Give the first evaluation a high score so it is the elite.
     evaluations[0].value = 1000
     if evaluations[0].obs_norm_buffer_data is not None:
-      evaluations[0].obs_norm_buffer_data[buffer.N] = 1000
+      evaluations[0].obs_norm_buffer_data[buffer.N] = 1000  # pyrefly: ignore[unsupported-operation]
     self.test_algorithm.process_evaluations(evaluations)
 
     eval_suggestions = self.test_algorithm.get_param_suggestions(evaluate=True)
@@ -115,7 +115,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
       )
       np.testing.assert_equal(
           eval_suggestion[algorithm.OBS_NORM_BUFFER_STATE][buffer.N],
-          evaluations[0].obs_norm_buffer_data[buffer.N],
+          evaluations[0].obs_norm_buffer_data[buffer.N],  # pyrefly: ignore[unsupported-operation]
       )
       self.assertFalse(eval_suggestion[algorithm.UPDATE_OBS_NORM_BUFFER])
 
@@ -208,7 +208,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
         worker_util.EvaluationResult(
             params_evaluated=np.ones((13,)),
             value=1,
-            obs_norm_buffer_data={
+            obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
                 buffer.N: 1,
                 buffer.STD: np.ones((8,)),
                 buffer.MEAN: np.ones((8,)),
@@ -219,7 +219,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
         worker_util.EvaluationResult(
             params_evaluated=np.ones((13,) * 2),
             value=2,
-            obs_norm_buffer_data={
+            obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
                 buffer.N: 2,
                 buffer.STD: np.ones((8,)) * 2,
                 buffer.MEAN: np.ones((8,)) * 2,

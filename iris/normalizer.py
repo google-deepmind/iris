@@ -144,7 +144,7 @@ class ActionRangeDenormalizer(Normalizer):
     """
     del update_buffer  # No buffer to update
     action = action.copy()
-    ignored_action = self._filter_ignored_input(action)
+    ignored_action = self._filter_ignored_input(action)  # pyrefly: ignore[bad-argument-type]
     action = utils.flatten(self._space, action)
     action = (action * self._state["half_range"]) + self._state["mid"]
     action = utils.unflatten(self._space, action)
@@ -184,7 +184,7 @@ class ObservationRangeNormalizer(Normalizer):
     """
     del update_buffer  # No buffer to update
     observation = observation.copy()
-    ignored_observation = self._filter_ignored_input(observation)
+    ignored_observation = self._filter_ignored_input(observation)  # pyrefly: ignore[bad-argument-type]
 
     observation = utils.flatten(self._space, observation)
     observation = (observation - self._state["mid"]) / self._state["half_range"]
@@ -215,7 +215,7 @@ class RunningMeanStdNormalizer(Normalizer):
       update_buffer: bool = True,
   ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     observation = observation.copy()
-    ignored_observation = self._filter_ignored_input(observation)
+    ignored_observation = self._filter_ignored_input(observation)  # pyrefly: ignore[bad-argument-type]
     observation = utils.flatten(self._space, observation)
     if update_buffer:
       self._buffer.push(observation)
@@ -245,7 +245,7 @@ class RunningMeanStdAgentVsAgentNormalizer(RunningMeanStdNormalizer):
   ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     observation = observation.copy()
 
-    opp_observation = self._filter_ignored_input(observation)
+    opp_observation = self._filter_ignored_input(observation)  # pyrefly: ignore[bad-argument-type]
     opp_observation = utils.flatten(self._space_ignored, opp_observation)
 
     arm_observation = utils.flatten(self._space, observation)

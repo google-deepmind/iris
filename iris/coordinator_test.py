@@ -69,7 +69,7 @@ def make_bb_program(
       workers.append(worker_handle)
 
   if warmstartdir:
-    warmstartdir = pathlib.Path(warmstartdir)
+    warmstartdir = pathlib.Path(warmstartdir)  # pyrefly: ignore[bad-assignment]
   algo = algo_config["algorithm_class"](**algo_config["algorithm_args"])
 
   # Launches eval worker instances if there is at least one num_eval_workers.

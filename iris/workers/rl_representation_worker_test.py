@@ -52,7 +52,7 @@ class RlRepresentationWorkerTest(absltest.TestCase):
     self.assertIn('INFO:absl:Total Reward:', logs.output[-1])
     self.assertLen(logs.output, 401)
     self.assertLessEqual(result1.value, 0)
-    self.assertLessEqual(result1.metrics['extra_metric'], 500.0)
+    self.assertLessEqual(result1.metrics['extra_metric'], 500.0)  # pyrefly: ignore[unsupported-operation]
 
     result2 = worker_obj.work(
         params_to_eval=np.ones(3),

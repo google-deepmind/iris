@@ -68,11 +68,11 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
     self._observation_normalizer.buffer.reset()
 
     if obs_norm_state is not None:
-      self._observation_normalizer.state = obs_norm_state
+      self._observation_normalizer.state = obs_norm_state  # pyrefly: ignore[bad-argument-type]
 
     video = None
     if record_video:
-      video = video_recorder.VideoRecorder(video_path, video_framerate)
+      video = video_recorder.VideoRecorder(video_path, video_framerate)  # pyrefly: ignore[bad-argument-type]
 
     reward_dict = collections.defaultdict(float)
     agent_1 = None
@@ -115,9 +115,9 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
           "done": done,
           rl_worker.INFO: info,
       }
-      mdict = self._metrics_fn(self._env, step_output)
+      mdict = self._metrics_fn(self._env, step_output)  # pyrefly: ignore[not-callable]
       for metric_name, metric_value in mdict.items():
-        metrics[metric_name] += metric_value
+        metrics[metric_name] += metric_value  # pyrefly: ignore[unsupported-operation]
       for rkey, rval in reward_dict.items():
         metrics[f"reward_{rkey}"] = rval
 

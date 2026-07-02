@@ -111,7 +111,7 @@ class PersistentES(algorithm.BlackboxAlgorithm):
         pos_directions.append((params - self._opt_params) / self._std)
         pos_directions[-1] = self._positive_cumulative_perturbations[
             i] + pos_directions[-1]
-        if pos_eval_results[i].metrics["current_step"] == 0:
+        if pos_eval_results[i].metrics["current_step"] == 0:  # pyrefly: ignore[unsupported-operation]
           self._positive_cumulative_perturbations[i] = 0
         else:
           self._positive_cumulative_perturbations[i] = pos_directions[-1]
@@ -120,7 +120,7 @@ class PersistentES(algorithm.BlackboxAlgorithm):
         neg_directions.append((params - self._opt_params) / self._std)
         neg_directions[-1] = self._negative_cumulative_perturbations[
             i] + neg_directions[-1]
-        if neg_eval_results[i].metrics["current_step"] == 0:
+        if neg_eval_results[i].metrics["current_step"] == 0:  # pyrefly: ignore[unsupported-operation]
           self._negative_cumulative_perturbations[i] = 0
         else:
           self._negative_cumulative_perturbations[i] = neg_directions[-1]
@@ -136,7 +136,7 @@ class PersistentES(algorithm.BlackboxAlgorithm):
       max_evals = np.max(np.vstack([pos_evals, neg_evals]), axis=0)
     elif self._top_sort_type == "diff":
       max_evals = np.abs(pos_evals - neg_evals)
-    idx = (-max_evals).argsort()[:self._num_top]
+    idx = (-max_evals).argsort()[:self._num_top]  # pyrefly: ignore[unbound-name]
     pos_evals = pos_evals[idx]
     neg_evals = neg_evals[idx]
     all_top_evals = np.hstack([pos_evals, neg_evals])
@@ -212,7 +212,7 @@ class PersistentES(algorithm.BlackboxAlgorithm):
   def _get_state(self) -> Dict[str, Any]:
     state = {"params_to_eval": self._opt_params}
     if self._obs_norm_data_buffer is not None:
-      state["obs_norm_state"] = self._obs_norm_data_buffer.state
+      state["obs_norm_state"] = self._obs_norm_data_buffer.state  # pyrefly: ignore[bad-assignment]
     return state
 
   @state.setter

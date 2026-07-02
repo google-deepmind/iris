@@ -92,7 +92,7 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
     )
     init_state = {'init_params': np.array([10.0, 10.0])}
     if expected_obs_norm_state:
-      init_state['obs_norm_buffer_data'] = {
+      init_state['obs_norm_buffer_data'] = {  # pyrefly: ignore[bad-assignment]
           'mean': np.asarray([0.0, 0.0]),
           'std': np.asarray([1.0, 1.0]),
           'n': 0,

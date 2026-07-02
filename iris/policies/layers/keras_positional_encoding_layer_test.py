@@ -20,7 +20,7 @@ class PositionalEncodingTest(absltest.TestCase):
 
   def test_layer_output(self):
     """Tests the output of PositionalEncoding layer."""
-    encoding = keras_positional_encoding_layer.PositionalEncoding()(7, 4)
+    encoding = keras_positional_encoding_layer.PositionalEncoding()(7, 4)  # pyrefly: ignore[not-callable]
     self.assertEqual(encoding.shape, (1, 7, 4))
 
 if __name__ == "__main__":

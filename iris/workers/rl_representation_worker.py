@@ -56,10 +56,10 @@ class RLRepresentationWorker(rl_worker.RLWorker):
     if reverb_client is not None:
       self._init_state["reverb_server_addr"] = reverb_client.server_address
 
-    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)
-    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)
+    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)  # pyrefly: ignore[bad-argument-type]
+    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
     time_step_spec = ts.time_step_spec(observation_spec=obs_spec)
-    policy_step_spec = policy_step.PolicyStep(action=action_spec)
+    policy_step_spec = policy_step.PolicyStep(action=action_spec)  # pyrefly: ignore[missing-argument]
     collect_data_spec = trajectory.from_transition(
         time_step_spec, policy_step_spec, time_step_spec
     )
@@ -111,14 +111,14 @@ class RLRepresentationWorker(rl_worker.RLWorker):
     self._observation_normalizer.buffer.reset()
 
     if obs_norm_state is not None:
-      self._observation_normalizer.state = obs_norm_state
+      self._observation_normalizer.state = obs_norm_state  # pyrefly: ignore[bad-argument-type]
 
     if env_seed is not None:
       self._env.seed(env_seed)
 
     video = None
     if record_video:
-      video = video_recorder.VideoRecorder(video_path, video_framerate)
+      video = video_recorder.VideoRecorder(video_path, video_framerate)  # pyrefly: ignore[bad-argument-type]
 
     reward = 0.0
     metrics = collections.defaultdict(float)
@@ -134,7 +134,7 @@ class RLRepresentationWorker(rl_worker.RLWorker):
     for st in range(self._rollout_length):
       normalized_obs = self._observation_normalizer(obs, update_obs_norm_buffer)
       action = self._policy.act(normalized_obs)
-      action_step = policy_step.PolicyStep(action)
+      action_step = policy_step.PolicyStep(action)  # pyrefly: ignore[missing-argument]
       action = self._action_denormalizer(action)
       next_obs, r, done, info = self._env.step(action)
       reward += r
@@ -158,9 +158,9 @@ class RLRepresentationWorker(rl_worker.RLWorker):
           "done": done,
           rl_worker.INFO: info,
       }
-      mdict = self._metrics_fn(self._env, step_output)
+      mdict = self._metrics_fn(self._env, step_output)  # pyrefly: ignore[not-callable]
       for metric_name, metric_value in mdict.items():
-        metrics[metric_name] += metric_value
+        metrics[metric_name] += metric_value  # pyrefly: ignore[unsupported-operation]
 
       obs = next_obs
       time_step = next_time_step

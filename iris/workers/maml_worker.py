@@ -33,7 +33,7 @@ def _multiple_eval(
 ) -> Tuple[float, Sequence[worker_util.EvaluationResult]]:
   """Evaluates parameters multiple times and averages results."""
   results = [work_fn(params_to_eval, **work_kwargs) for _ in range(num_evals)]
-  return np.mean([r.value for r in results]), results
+  return np.mean([r.value for r in results]), results  # pyrefly: ignore[no-matching-overload]
 
 
 # TODO: Potentially make this a subclass of BlackboxAlgorithm.
@@ -300,7 +300,7 @@ class MAMLWorker(worker.Worker):
     self._adaptation_optimizer = adaptation_constructor()
     self._init_state = self._worker._init_state
 
-  def work(
+  def work(  # pyrefly: ignore[bad-override]
       self, params_to_eval: Any, **work_kwargs  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
   ) -> worker_util.EvaluationResult:
     """Uses another Worker's work() function for adaptation.

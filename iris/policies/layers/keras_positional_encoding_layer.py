@@ -29,7 +29,7 @@ class PositionalEncoding(tf.keras.layers.Layer):
     indices = tf.expand_dims(tf.range(seq_len), 0)
     indices = tf.tile(indices, [num_freq, 1])
     freq_fn = lambda k: 1.0/(10000 ** (2*k/encoding_dimension))
-    freq = tf.keras.layers.Lambda(freq_fn)(tf.range(num_freq))
+    freq = tf.keras.layers.Lambda(freq_fn)(tf.range(num_freq))  # pyrefly: ignore[not-callable]
     freq = tf.expand_dims(freq, 1)
     freq = tf.tile(freq, [1, seq_len])
     args = tf.multiply(freq, tf.cast(indices, dtype=tf.float64))

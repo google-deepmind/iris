@@ -42,21 +42,21 @@ def merge_eval_results(results: Sequence[EvaluationResult]) -> EvaluationResult:
   if len(results) == 1:
     return results[0]
 
-  merged_value = np.mean([r.value for r in results])
+  merged_value = np.mean([r.value for r in results])  # pyrefly: ignore[no-matching-overload]
 
   merged_obs_norm_buffer_data = None
   if results[0].obs_norm_buffer_data:
     merged_buffer = buffer.MeanStdBuffer()
     merged_buffer.data = results[0].obs_norm_buffer_data
     for result in itertools.islice(results, 1, None):
-      merged_buffer.merge(result.obs_norm_buffer_data)
+      merged_buffer.merge(result.obs_norm_buffer_data)  # pyrefly: ignore[bad-argument-type]
     merged_obs_norm_buffer_data = merged_buffer.data
 
   if results[0].metrics is not None:
     merged_metrics = {}
     for metric_name in results[0].metrics:
-      merged_metrics[metric_name] = np.mean(
-          [result.metrics[metric_name] for result in results])
+      merged_metrics[metric_name] = np.mean(  # pyrefly: ignore[no-matching-overload]
+          [result.metrics[metric_name] for result in results])  # pyrefly: ignore[unsupported-operation]
   else:
     merged_metrics = {}
 

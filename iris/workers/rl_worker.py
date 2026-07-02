@@ -124,13 +124,13 @@ class RLWorker(worker.Worker):
 
     if not isinstance(observation_normalizer, normalizer.Normalizer):
       self._observation_normalizer = observation_normalizer(
-          self._env.observation_space
+          self._env.observation_space  # pyrefly: ignore[bad-argument-type]
       )
     else:
       self._observation_normalizer = observation_normalizer
 
     if not isinstance(action_denormalizer, normalizer.Normalizer):
-      self._action_denormalizer = action_denormalizer(self._env.action_space)
+      self._action_denormalizer = action_denormalizer(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
     else:
       self._action_denormalizer = action_denormalizer
 
@@ -246,11 +246,11 @@ class RLWorker(worker.Worker):
     self._observation_normalizer.buffer.reset()
 
     if obs_norm_state is not None:
-      self._observation_normalizer.state = obs_norm_state
+      self._observation_normalizer.state = obs_norm_state  # pyrefly: ignore[bad-argument-type]
 
     video = None
     if record_video:
-      video = video_recorder.VideoRecorder(video_path, video_framerate)
+      video = video_recorder.VideoRecorder(video_path, video_framerate)  # pyrefly: ignore[bad-argument-type]
 
     rewards = []
     metrics = collections.defaultdict(list)
@@ -286,7 +286,7 @@ class RLWorker(worker.Worker):
           "done": done,
           INFO: info,
       }
-      mdict = self._metrics_fn(self._env, step_output)
+      mdict = self._metrics_fn(self._env, step_output)  # pyrefly: ignore[not-callable]
       for metric_name, metric_value in mdict.items():
         metrics[metric_name].append(metric_value)
 
@@ -306,12 +306,12 @@ class RLWorker(worker.Worker):
         self._step = 0
         break
 
-    aggregate_reward, reward_stats = self._stats_fn(
+    aggregate_reward, reward_stats = self._stats_fn(  # pyrefly: ignore[not-callable]
         "reward", rewards, **self._stats_fn_args
     )
     aggregate_metrics_with_stats = {}
     for metric_name, metric_values in metrics.items():
-      metric, metric_stats = self._stats_fn(
+      metric, metric_stats = self._stats_fn(  # pyrefly: ignore[not-callable]
           metric_name, metric_values, **self._stats_fn_args
       )
       aggregate_metrics_with_stats[metric_name] = metric

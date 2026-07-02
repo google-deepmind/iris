@@ -45,7 +45,7 @@ class AdaptationOptimizersTest(parameterized.TestCase):
         work_fn=self.worker_obj.work,
     )
     self.assertLen(results, 5)
-    self.assertEqual(mean_val, np.mean([result.value for result in results]))
+    self.assertEqual(mean_val, np.mean([result.value for result in results]))  # pyrefly: ignore[no-matching-overload]
 
   def test_gradient_adaptation(self):
     num_iterations = 2
@@ -66,7 +66,7 @@ class AdaptationOptimizersTest(parameterized.TestCase):
     )
 
     self.assertEqual(
-        val, np.mean([result.value for result in results[-num_adapted_evals:]])
+        val, np.mean([result.value for result in results[-num_adapted_evals:]])  # pyrefly: ignore[no-matching-overload]
     )
 
     meta_value = self.worker_obj.work(self.init_params).value
@@ -98,7 +98,7 @@ class AdaptationOptimizersTest(parameterized.TestCase):
         + num_adapted_evals,
     )
     self.assertEqual(
-        val, np.mean([result.value for result in results[-num_adapted_evals:]])
+        val, np.mean([result.value for result in results[-num_adapted_evals:]])  # pyrefly: ignore[no-matching-overload]
     )
     self.assertGreaterEqual(val, meta_value)
 
@@ -109,7 +109,7 @@ class AdaptationOptimizersTest(parameterized.TestCase):
     )
     self.assertEqual(
         val,
-        np.mean([result.value for result in new_results[-num_adapted_evals:]]),
+        np.mean([result.value for result in new_results[-num_adapted_evals:]]),  # pyrefly: ignore[no-matching-overload]
     )
     self.assertLen(
         new_results,
