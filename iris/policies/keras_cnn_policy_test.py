@@ -37,19 +37,19 @@ class KerasCNNPolicyTest(absltest.TestCase):
     policy.reset()
     policy.update_weights(new_weights=np.ones(38))
     image = np.ones((2, 2, 1))
-    act = policy.act({
+    act = policy.act({  # pyrefly: ignore[bad-argument-type]
         'vision': image,
         'sensor1': [-3, -3],
         'sensor2': [-3, -3],
     })
-    np.testing.assert_array_almost_equal(act, np.ones((5)), 1)
+    np.testing.assert_array_almost_equal(act, np.ones((5)), 1)  # pyrefly: ignore[bad-argument-type]
     policy.update_weights(new_weights=np.zeros(38))
-    act = policy.act({
+    act = policy.act({  # pyrefly: ignore[bad-argument-type]
         'vision': image,
         'sensor1': [-3, -3],
         'sensor2': [-3, -3],
     })
-    np.testing.assert_array_almost_equal(act, np.zeros((5)), 1)
+    np.testing.assert_array_almost_equal(act, np.zeros((5)), 1)  # pyrefly: ignore[bad-argument-type]
 
   def test_lstm_state(self):
     policy = keras_cnn_policy.KerasCNNPolicy(
@@ -80,7 +80,7 @@ class KerasCNNPolicyTest(absltest.TestCase):
 
     # Checks that the LSTM state changes although the observations are the same.
     for _ in range(5):
-      policy.act(observation)
+      policy.act(observation)  # pyrefly: ignore[bad-argument-type]
       rnn_state = policy._rnn_state
       np.testing.assert_raises(AssertionError,
                                np.testing.assert_array_almost_equal,

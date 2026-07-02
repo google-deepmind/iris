@@ -28,7 +28,7 @@ class KerasToeplitzPolicyTest(absltest.TestCase):
         hidden_layer_sizes=[3])
     policy.update_weights(new_weights=np.ones(8))
     act = policy.act(np.array([2, -1]))
-    np.testing.assert_array_almost_equal(act, np.array([0.9, 0.9]), 1)
+    np.testing.assert_array_almost_equal(act, np.array([0.9, 0.9]), 1)  # pyrefly: ignore[bad-argument-type]
 
   def test_policy_act_dict(self):
     """Tests the act function for Toeplitz policy with dict observation."""
@@ -44,7 +44,7 @@ class KerasToeplitzPolicyTest(absltest.TestCase):
         'sensor1': np.array([2, 2]),
         'sensor2': np.array([-1, -1])
     })
-    np.testing.assert_array_almost_equal(act, np.array([0.9, 0.9, 0.9, 0.9]), 1)
+    np.testing.assert_array_almost_equal(act, np.array([0.9, 0.9, 0.9, 0.9]), 1)  # pyrefly: ignore[bad-argument-type]
 
 
 if __name__ == '__main__':

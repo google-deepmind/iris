@@ -28,7 +28,7 @@ class FullyConnectedNeuralNetworkPolicyTest(absltest.TestCase):
         hidden_layer_sizes=[2],
         activation='clip')
     policy.update_weights(new_weights=np.ones(6))
-    act = policy.act(np.array([2, -1]))[0]
+    act = policy.act(np.array([2, -1]))[0]  # pyrefly: ignore[bad-index]
     self.assertEqual(act, 1)
 
   def test_policy_act_dict(self):
@@ -45,7 +45,7 @@ class FullyConnectedNeuralNetworkPolicyTest(absltest.TestCase):
     act = policy.act({
         'sensor1': np.array([2, 2]),
         'sensor2': np.array([-1, -1])
-    })[0]
+    })[0]  # pyrefly: ignore[bad-index]
     self.assertEqual(act, 1)
 
 

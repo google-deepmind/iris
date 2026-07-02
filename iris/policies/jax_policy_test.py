@@ -43,7 +43,7 @@ class JaxPolicyTest(absltest.TestCase):
         init_x=init_x)
     policy.update_weights(new_weights=np.ones(6))
     act = policy.act({'a': np.array([[2, -1]])})
-    np.testing.assert_array_almost_equal(act, [0.9], 1)
+    np.testing.assert_array_almost_equal(act, [0.9], 1)  # pyrefly: ignore[bad-argument-type]
 
     # Comparing keras action output with Numpy NN policy output
     numpy_policy = nn_policy.FullyConnectedNeuralNetworkPolicy(
@@ -52,7 +52,7 @@ class JaxPolicyTest(absltest.TestCase):
         hidden_layer_sizes=[2])
     numpy_policy.update_weights(new_weights=np.ones(6))
     numpy_act = numpy_policy.act(np.array([2, -1]))
-    np.testing.assert_array_almost_equal(act, numpy_act)
+    np.testing.assert_array_almost_equal(act, numpy_act)  # pyrefly: ignore[bad-argument-type]
 
 
 if __name__ == '__main__':

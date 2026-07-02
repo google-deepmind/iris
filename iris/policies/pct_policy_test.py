@@ -30,7 +30,7 @@ class PCTPolicyTest(absltest.TestCase):
     pct_enc = pct_policy.PCTEncoder(emb_dim=out_dim, attention_type='perf-relu')
     params = pct_enc.init(jax.random.PRNGKey(0), pc)
     emb = pct_enc.apply(params, pc)
-    self.assertEqual(emb.shape, (batch_size, out_dim))
+    self.assertEqual(emb.shape, (batch_size, out_dim))  # pyrefly: ignore[missing-attribute]
 
   def test_pct_encoder_with_mask(self):
     batch_size = 10
@@ -46,10 +46,10 @@ class PCTPolicyTest(absltest.TestCase):
     pct_enc = pct_policy.PCTEncoder(emb_dim=out_dim)
     params = pct_enc.init(jax.random.PRNGKey(0), pc)
     emb = pct_enc.apply(params, pc, mask)
-    self.assertEqual(emb.shape, (batch_size, out_dim))
+    self.assertEqual(emb.shape, (batch_size, out_dim))  # pyrefly: ignore[missing-attribute]
 
     emb_no_mask = pct_enc.apply(params, pc[:, :-masked_points], None)
-    np.testing.assert_allclose(emb_no_mask, emb, atol=1e-1, rtol=1e-1)
+    np.testing.assert_allclose(emb_no_mask, emb, atol=1e-1, rtol=1e-1)  # pyrefly: ignore[no-matching-overload]
 
   def test_policy_act(self):
     """Tests the act function for PCT policy."""
@@ -76,7 +76,7 @@ class PCTPolicyTest(absltest.TestCase):
     x = ob_space.sample()
 
     jax_act = policy.act(x)
-    np.testing.assert_array_almost_equal(jax_act, np.zeros(7), 2)
+    np.testing.assert_array_almost_equal(jax_act, np.zeros(7), 2)  # pyrefly: ignore[bad-argument-type]
 
 
 if __name__ == '__main__':

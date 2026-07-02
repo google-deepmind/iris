@@ -40,7 +40,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     for image_label in self._image_input_labels:
       vision_input_layers.append(
           tf.keras.layers.Input(
-              shape=self._ob_space[image_label].shape,
+              shape=self._ob_space[image_label].shape,  # pyrefly: ignore[bad-index]
               batch_size=1,
               dtype="float32",
               name="vision_input" + image_label,
@@ -49,7 +49,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     return vision_input_layers
 
   def _create_other_input_layer(self):
-    self._other_ob_space = self._ob_space.spaces.copy()
+    self._other_ob_space = self._ob_space.spaces.copy()  # pyrefly: ignore[missing-attribute]
     for input_label in self._image_input_labels:
       del self._other_ob_space[input_label]
     self._other_ob_space = spaces.Dict(self._other_ob_space)
@@ -95,12 +95,12 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     """
     # Convolution and pooling layers.
     if pool_sizes is None:
-      pool_sizes = [None] * len(conv_filter_sizes)
+      pool_sizes = [None] * len(conv_filter_sizes)  # pyrefly: ignore[bad-assignment]
     if pool_strides is None:
-      pool_strides = [None] * len(conv_filter_sizes)
+      pool_strides = [None] * len(conv_filter_sizes)  # pyrefly: ignore[bad-assignment]
 
     for filter_size, kernel_size, pool_size, pool_stride in zip(
-        conv_filter_sizes, conv_kernel_sizes, pool_sizes, pool_strides
+        conv_filter_sizes, conv_kernel_sizes, pool_sizes, pool_strides  # pyrefly: ignore[bad-argument-type]
     ):
       x = tf.keras.layers.Conv2D(
           filter_size,
@@ -117,10 +117,10 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     if use_spatial_softmax:
       x = spatial_softmax.SpatialSoftmax(data_format="channels_last")(x)
     else:
-      x = tf.keras.layers.Flatten()(x)
+      x = tf.keras.layers.Flatten()(x)  # pyrefly: ignore[not-callable]
 
     # Encoding image into a feature vector.
-    return tf.keras.layers.Dense(
+    return tf.keras.layers.Dense(  # pyrefly: ignore[not-callable]
         image_feature_length, activation=final_vision_activation
     )(x)
 
@@ -140,8 +140,8 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     )
     inputs.append(lstm_h_state_input)
     inputs.append(lstm_c_state_input)
-    x = tf.keras.layers.Reshape((1, -1))(x)
-    x, h_state, c_state = tf.keras.layers.LSTM(
+    x = tf.keras.layers.Reshape((1, -1))(x)  # pyrefly: ignore[not-callable]
+    x, h_state, c_state = tf.keras.layers.LSTM(  # pyrefly: ignore[not-callable]
         units=self._rnn_units, return_state=True, stateful=True
     )(x, initial_state=[lstm_h_state_input, lstm_c_state_input])
     return x, [h_state, c_state]
@@ -235,23 +235,23 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
       inputs.append(vision_input)
 
     if self._use_rnn:
-      inputs.extend(self._rnn_state)
+      inputs.extend(self._rnn_state)  # pyrefly: ignore[bad-argument-type]
 
     if self._other_ob_dim > 0:
       other_ob = ob.copy()
       for image_label in self._image_input_labels:
-        del other_ob[image_label]
+        del other_ob[image_label]  # pyrefly: ignore[unsupported-operation]
 
       # Flatten other observations.
       other_input = utils.flatten(self._other_ob_space, other_ob)
       inputs.append(np.array([other_input]))
 
     # Run model.
-    output = self.model(inputs)
+    output = self.model(inputs)  # pyrefly: ignore[not-callable]
 
     # Parse model output.
     if self._use_rnn:
-      num_state_objects = len(self._rnn_state)
+      num_state_objects = len(self._rnn_state)  # pyrefly: ignore[bad-argument-type]
       self._rnn_state = [output[i].numpy() for i in range(num_state_objects)]
       output = output[num_state_objects:]
     actions = output[0].numpy()

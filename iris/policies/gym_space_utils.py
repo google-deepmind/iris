@@ -38,8 +38,8 @@ def filter_space(space: gym.Space,
 def extend_space(space: gym.Space, key: str, value: gym.Space):
   """Adds new keys or dimensions to the space."""
   if isinstance(space, gym.spaces.Box):
-    low = np.concatenate((space.low, value.low))
-    high = np.concatenate((space.high, value.high))
+    low = np.concatenate((space.low, value.low))  # pyrefly: ignore[missing-attribute]
+    high = np.concatenate((space.high, value.high))  # pyrefly: ignore[missing-attribute]
     return gym.spaces.Box(low=low, high=high)
   elif isinstance(space, gym.spaces.Dict):
     extended_space = dict(space.spaces)
@@ -62,9 +62,9 @@ def filter_sample(
   if isinstance(x, dict):
     filtered_x = {}
     for sensor in selected:
-      filtered_x[sensor] = x[sensor]
+      filtered_x[sensor] = x[sensor]  # pyrefly: ignore[bad-index]
   else:
-    filtered_x = np.array(x).take(selected)
+    filtered_x = np.array(x).take(selected)  # pyrefly: ignore[no-matching-overload]
   return filtered_x
 
 

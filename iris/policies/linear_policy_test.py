@@ -26,7 +26,7 @@ class LinearPolicyTest(absltest.TestCase):
         ob_space=spaces.Box(low=-10, high=10, shape=(2,)),
         ac_space=spaces.Box(low=-10, high=10, shape=(1,)))
     policy.update_weights(new_weights=np.ones(2))
-    act = policy.act(np.array([2, -1]))[0]
+    act = policy.act(np.array([2, -1]))[0]  # pyrefly: ignore[bad-index]
     self.assertEqual(act, 1)
 
   def test_policy_act_dict(self):
@@ -41,7 +41,7 @@ class LinearPolicyTest(absltest.TestCase):
     act = policy.act({
         'sensor1': np.array([2, 2]),
         'sensor2': np.array([-1, -1])
-    })[0]
+    })[0]  # pyrefly: ignore[bad-index]
     self.assertEqual(act, 1)
 
 

@@ -51,6 +51,6 @@ class LinearPolicy(base_policy.BasePolicy):
     """
     ob = utils.flatten(self._ob_space, ob)
     matrix_weights = np.reshape(self._weights, (self._ac_dim, self._ob_dim))
-    actions = self._activation(np.dot(matrix_weights, ob))
+    actions = self._activation(np.dot(matrix_weights, ob))  # pyrefly: ignore[not-callable]
     actions = utils.unflatten(self._ac_space, actions)
     return actions

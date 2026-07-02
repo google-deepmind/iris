@@ -143,7 +143,7 @@ class OptionHierarchicalPolicyTest(parameterized.TestCase):
     act = policy.act(ob)
     # Latent command is [1, 1, 1, 1] and low level output is
     # 2 * sum([1, 1, 1, 1, -4]) = 0
-    self.assertAlmostEqual(act, 0, places=2)
+    self.assertAlmostEqual(act, 0, places=2)  # pyrefly: ignore[no-matching-overload]
     # Check that low level doesn't terminate and latent command remains constant
     # until low level terminates
     ob = np.array([5, -4.5])
@@ -153,21 +153,21 @@ class OptionHierarchicalPolicyTest(parameterized.TestCase):
       act = policy.act(ob)
       # Latent command is still [1, 1, 1, 1] and low level output is
       # 2 * sum([1, 1, 1, 1, -4.5]) = -1
-      self.assertAlmostEqual(act, -1, places=2)
+      self.assertAlmostEqual(act, -1, places=2)  # pyrefly: ignore[no-matching-overload]
     ob = np.array([5, -3.5])
     if is_ob_dict:
       ob = {"sensor_1": np.array([5]), "sensor_2": np.array([-3.5])}
     act = policy.act(ob)
     # Latent command is still [1, 1, 1, 1] and low level output is
     # 2 * sum([1, 1, 1, 1, -3.5]) = 1 and low level terminates
-    self.assertAlmostEqual(act, 1, places=2)
+    self.assertAlmostEqual(act, 1, places=2)  # pyrefly: ignore[no-matching-overload]
     ob = np.array([-0.5, 0.5])
     if is_ob_dict:
       ob = {"sensor_1": np.array([-0.5]), "sensor_2": np.array([0.5])}
     act = policy.act(ob)
     # Latent command has now changed to [0, 0, 0, 0] and low level output is
     # 2 * sum([0, 0, 0, 0, 0.5]) = 1
-    self.assertAlmostEqual(act, 1, places=2)
+    self.assertAlmostEqual(act, 1, places=2)  # pyrefly: ignore[no-matching-overload]
 
   def test_vision_hierarchical_policy_act(self):
     """Tests the act function for hierarchical policy with vision input."""
@@ -179,7 +179,7 @@ class OptionHierarchicalPolicyTest(parameterized.TestCase):
         "sensor_1": np.array([5]),
         "sensor_2": np.array([-4])
     }
-    act = policy.act(ob)[0]
+    act = policy.act(ob)[0]  # pyrefly: ignore[bad-index]
     self.assertAlmostEqual(act, 1, places=2)
 
 

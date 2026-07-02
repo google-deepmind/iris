@@ -78,7 +78,7 @@ class HierarchicalLevel(object):
     self._ac_space = gym.spaces.Box(-1, 1, (self._out_command_dim,))
     self._timescale = fixed_timescale
     if self._timescale is None:
-      self._timescale_low, self._timescale_high = timescale_range
+      self._timescale_low, self._timescale_high = timescale_range  # pyrefly: ignore[not-iterable]
     self._act_after_steps = 0
     self._output = np.zeros(self._out_command_dim)
     self.policy = policy(ob_space=self._ob_space, ac_space=self._ac_space)
@@ -94,7 +94,7 @@ class HierarchicalLevel(object):
     if not self._act_after_steps:
       ob = gym_space_utils.filter_sample(ob, self._selected_observations)
       ob = gym_space_utils.extend_sample(ob, "in_command", in_command)
-      self._output = self.policy.act(ob)
+      self._output = self.policy.act(ob)  # pyrefly: ignore[bad-assignment]
       if self._timescale is not None:
         self._act_after_steps = self._timescale
       else:

@@ -41,20 +41,20 @@ class KerasPIPolicyTest(absltest.TestCase):
     policy.update_weights(np.ones(21))
     policy.update_representation_weights(np.ones(1001))
     image = np.ones((2, 2, 1))
-    act = policy.act({
+    act = policy.act({  # pyrefly: ignore[bad-argument-type]
         'vision': image,
         'sensor1': [-3, -3],
         'sensor2': [-3, -3],
     })
-    np.testing.assert_array_almost_equal(act, np.ones((5)), 1)
+    np.testing.assert_array_almost_equal(act, np.ones((5)), 1)  # pyrefly: ignore[bad-argument-type]
     policy.update_weights(np.zeros(21))
     policy.update_representation_weights(np.zeros(1001))
-    act = policy.act({
+    act = policy.act({  # pyrefly: ignore[bad-argument-type]
         'vision': image,
         'sensor1': [-3, -3],
         'sensor2': [-3, -3],
     })
-    np.testing.assert_array_almost_equal(act, np.zeros((5)), 1)
+    np.testing.assert_array_almost_equal(act, np.zeros((5)), 1)  # pyrefly: ignore[bad-argument-type]
 
 
 if __name__ == '__main__':

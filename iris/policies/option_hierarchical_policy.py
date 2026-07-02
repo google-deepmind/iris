@@ -85,7 +85,7 @@ class OptionHierarchicalLevel(object):
     if terminated:
       ob = gym_space_utils.filter_sample(ob, self._selected_observations)
       ob = gym_space_utils.extend_sample(ob, "in_command", in_command)
-      self._output = self.policy.act(ob)
+      self._output = self.policy.act(ob)  # pyrefly: ignore[bad-assignment]
       if self.idx > 0:
         self._terminate = bool(np.random.binomial(1, (self._output[0] + 1.)/2.))
         self._output = self._output[1:]

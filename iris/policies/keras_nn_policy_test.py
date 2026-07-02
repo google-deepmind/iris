@@ -29,7 +29,7 @@ class KerasNNPolicyTest(absltest.TestCase):
         hidden_layer_sizes=[2])
     policy.update_weights(new_weights=np.ones(6))
     keras_act = policy.act(np.array([2, -1]))
-    np.testing.assert_array_almost_equal(keras_act, [0.9], 1)
+    np.testing.assert_array_almost_equal(keras_act, [0.9], 1)  # pyrefly: ignore[bad-argument-type]
 
     # Comparing keras action output with Numpy NN policy output
     numpy_policy = nn_policy.FullyConnectedNeuralNetworkPolicy(
@@ -38,7 +38,7 @@ class KerasNNPolicyTest(absltest.TestCase):
         hidden_layer_sizes=[2])
     numpy_policy.update_weights(new_weights=np.ones(6))
     numpy_act = numpy_policy.act(np.array([2, -1]))
-    np.testing.assert_array_almost_equal(keras_act, numpy_act)
+    np.testing.assert_array_almost_equal(keras_act, numpy_act)  # pyrefly: ignore[bad-argument-type]
 
   def test_policy_act_dict(self):
     """Tests act for keras NN policy with dict observation."""
@@ -54,7 +54,7 @@ class KerasNNPolicyTest(absltest.TestCase):
         'sensor1': np.array([2, 2]),
         'sensor2': np.array([-1, -1])
     })
-    np.testing.assert_array_almost_equal(act, [0.9], 1)
+    np.testing.assert_array_almost_equal(act, [0.9], 1)  # pyrefly: ignore[bad-argument-type]
 
 
 if __name__ == '__main__':
