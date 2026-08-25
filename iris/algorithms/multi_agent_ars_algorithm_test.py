@@ -523,15 +523,15 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
       if expected_states[i]['obs_norm_state'] is not None:
         self.assertAllClose(
             agent_state['obs_norm_state']['mean'],
-            expected_states[i]['obs_norm_state']['mean'],
+            expected_states[i]['obs_norm_state']['mean'],  # pyrefly: ignore[bad-index]
         )
         self.assertAllClose(
             agent_state['obs_norm_state']['std'],
-            expected_states[i]['obs_norm_state']['std'],
+            expected_states[i]['obs_norm_state']['std'],  # pyrefly: ignore[bad-index]
         )
         self.assertAllClose(
             agent_state['obs_norm_state']['n'],
-            expected_states[i]['obs_norm_state']['n'],
+            expected_states[i]['obs_norm_state']['n'],  # pyrefly: ignore[bad-index]
         )
 
 
