@@ -25,7 +25,7 @@ class WorkerUtilTest(absltest.TestCase):
         params_evaluated=np.zeros(6),
         value=np.float64(5.0),
         obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
-            'n': 5,
+            'n': 5,  # pyrefly: ignore[bad-assignment]
             'mean': np.zeros(7),
             'unnorm_var': np.ones(7),
         },
@@ -36,7 +36,7 @@ class WorkerUtilTest(absltest.TestCase):
         params_evaluated=np.zeros(6),
         value=np.float64(10.0),
         obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
-            'n': 10,
+            'n': 10,  # pyrefly: ignore[bad-assignment]
             'mean': np.ones(7),
             'unnorm_var': 2 * np.ones(7),
         },
