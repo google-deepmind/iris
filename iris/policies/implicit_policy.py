@@ -562,6 +562,6 @@ class ImplicitEBMPolicy(base_policy.BasePolicy):
       The actions in reinforcement learning.
     """
     ob = utils.flatten(self._ob_space, ob)
-    action = self._action_calculator.act(ob)
+    action = self._action_calculator.act(ob)  # pyrefly: ignore[bad-argument-type]
     action = utils.unflatten(self._ac_space, action)
     return action

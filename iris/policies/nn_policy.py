@@ -70,7 +70,7 @@ class FullyConnectedNeuralNetworkPolicy(base_policy.BasePolicy):
       mat_weight = np.reshape(
           self._weights[start:end],
           (self._layer_sizes[ith_layer + 1], self._layer_sizes[ith_layer]))
-      ith_layer_result = np.dot(mat_weight, ith_layer_result)
+      ith_layer_result = np.dot(mat_weight, ith_layer_result)  # pyrefly: ignore[no-matching-overload]
       ith_layer_result = self._activation(ith_layer_result)  # pyrefly: ignore[not-callable]
     actions = ith_layer_result
     actions = utils.unflatten(self._ac_space, actions)
