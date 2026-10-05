@@ -40,12 +40,13 @@ class RegularizedEvolutionController(base_controller.BaseController):
         population_size=population_size,
         tournament_size=tournament_size,
         mutator=pg.evolution.mutators.Uniform(seed=seed),
-        seed=seed)  # pytype: disable=wrong-arg-types  # gen-stub-imports
+        seed=seed,
+    )
     self._controller.setup(self._dna_spec)
 
   def get_state(self):
-    return pg.to_json_str(self._history)  # pytype: disable=attribute-error
+    return pg.to_json_str(self._history)
 
-  def set_state(self, serialized_state):  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def set_state(self, serialized_state):  # pyrefly: ignore[bad-override]
     self._history = pg.from_json_str(serialized_state)
     self._controller.recover(self._history)

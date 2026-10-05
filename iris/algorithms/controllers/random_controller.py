@@ -55,5 +55,5 @@ class RandomController(base_controller.BaseController):
   def get_state(self):
     return None
 
-  def set_state(self, serialized_state):  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def set_state(self, serialized_state):  # pyrefly: ignore[bad-override]
     pass

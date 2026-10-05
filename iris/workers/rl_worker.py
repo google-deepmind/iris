@@ -124,13 +124,13 @@ class RLWorker(worker.Worker):
 
     if not isinstance(observation_normalizer, normalizer.Normalizer):
       self._observation_normalizer = observation_normalizer(
-          self._env.observation_space  # pyrefly: ignore[bad-argument-type]
+          self._env.observation_space
       )
     else:
       self._observation_normalizer = observation_normalizer
 
     if not isinstance(action_denormalizer, normalizer.Normalizer):
-      self._action_denormalizer = action_denormalizer(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
+      self._action_denormalizer = action_denormalizer(self._env.action_space)
     else:
       self._action_denormalizer = action_denormalizer
 
@@ -149,7 +149,7 @@ class RLWorker(worker.Worker):
         self._observation_normalizer.buffer.data
     )
 
-  def work(  # pytype: disable=signature-mismatch  # overriding-default-value-checks
+  def work(  # pyrefly: ignore[bad-override]
       self,
       params_to_eval: np.ndarray,
       obs_norm_state: Optional[Mapping[str, np.ndarray]] = None,

@@ -56,8 +56,8 @@ class RLRepresentationWorker(rl_worker.RLWorker):
     if reverb_client is not None:
       self._init_state["reverb_server_addr"] = reverb_client.server_address
 
-    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)  # pyrefly: ignore[bad-argument-type]
-    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
+    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)
+    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)
     time_step_spec = ts.time_step_spec(observation_spec=obs_spec)
     policy_step_spec = policy_step.PolicyStep(action=action_spec)  # pyrefly: ignore[missing-argument]
     collect_data_spec = trajectory.from_transition(
@@ -74,7 +74,7 @@ class RLRepresentationWorker(rl_worker.RLWorker):
           stride_length=1,
       )
 
-  def work(  # pytype: disable=signature-mismatch  # overriding-default-value-checks
+  def work(  # pyrefly: ignore[bad-override]
       self,
       params_to_eval: np.ndarray,
       representation_params: Optional[np.ndarray] = None,

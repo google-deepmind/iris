@@ -28,8 +28,9 @@ class PolicyGradientController(base_controller.BaseController):
     """Initialization. See base class for more details."""
 
     super().__init__(dna_spec, batch_size)
-    self._controller = pg.reinforcement_learning.PPO(    # pytype: disable=module-attr
-        train_batch_size=self._batch_size, update_batch_size=update_batch_size)
+    self._controller = pg.reinforcement_learning.PPO(
+        train_batch_size=self._batch_size, update_batch_size=update_batch_size
+    )
     self._controller.setup(self._dna_spec)
     # If you have:
     # training batch size N (PG proposes a batch N of models, stored in cache)
@@ -46,6 +47,6 @@ class PolicyGradientController(base_controller.BaseController):
     # implementations.
     return None
 
-  def set_state(self, serialized_state):  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def set_state(self, serialized_state):  # pyrefly: ignore[bad-override]
     # TODO: See above.
     pass

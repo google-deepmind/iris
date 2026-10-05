@@ -165,7 +165,7 @@ class Coordinator:
     self._futures = []
     self._evaluations = {}
     self._aggregate_evaluations = [
-        worker_util.EvaluationResult(np.empty(0), 0)  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(np.empty(0), 0)
     ] * num_suggestions
     self._requests_to_send = []
 
@@ -612,7 +612,7 @@ class Coordinator:
             "worker.", i, e
         )
         i = (i + 1) % self._num_workers
-    return init_state  # pytype: disable=bad-return-type
+    return init_state
 
   def initialize_algorithm_state(self) -> int:
     """Initialize algorithm state, potentially loading an existing checkpoint.

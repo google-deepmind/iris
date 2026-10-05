@@ -301,7 +301,7 @@ class MAMLWorker(worker.Worker):
     self._init_state = self._worker._init_state
 
   def work(  # pyrefly: ignore[bad-override]
-      self, params_to_eval: Any, **work_kwargs  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+      self, params_to_eval: Any, **work_kwargs
   ) -> worker_util.EvaluationResult:
     """Uses another Worker's work() function for adaptation.
 

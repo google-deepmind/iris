@@ -43,7 +43,7 @@ class PyGloveWorker(worker.Worker):
     self._init_state["serialized_dna_spec"] = pg.to_json_str(dna_spec)
     self._blackbox_function = blackbox_function
 
-  def work(  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def work(  # pyrefly: ignore[bad-override]
       self,
       metadata: str,
       params_to_eval: np.ndarray,  # Ignored.

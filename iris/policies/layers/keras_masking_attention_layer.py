@@ -35,9 +35,8 @@ class FavorMaskingAttention(tf.keras.layers.Layer):
   """
 
   def __init__(
-      self,
-      kernel_transformation: Callable[..., tf.Tensor],
-      top_k: int = 5) -> None:  # pytype: disable=annotation-type-mismatch
+      self, kernel_transformation: Callable[..., tf.Tensor], top_k: int = 5
+  ) -> None:
     """Initializes FavorMaskingAttention layer.
 
     Args:

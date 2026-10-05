@@ -34,9 +34,8 @@ class FavorRankingAttention(tf.keras.layers.Layer):
   """
 
   def __init__(
-      self,
-      kernel_transformation: Callable[..., tf.Tensor],
-      top_k: int = 5) -> None:  # pytype: disable=annotation-type-mismatch
+      self, kernel_transformation: Callable[..., tf.Tensor], top_k: int = 5
+  ) -> None:
     """Initializes FavorRankingAttention layer.
 
     Args:

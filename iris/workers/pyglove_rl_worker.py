@@ -37,7 +37,7 @@ class PyGloveRLWorker(rl_worker.RLWorker):
   ) -> None:
     super().__init__(policy=policy, **kwargs)
     self._init_state["serialized_dna_spec"] = pg.to_json_str(
-        self._policy.dna_spec  # pytype: disable=attribute-error
+        self._policy.dna_spec  # pyrefly: ignore[missing-attribute]
     )
 
   def work(  # pyrefly: ignore[bad-override]
@@ -45,7 +45,7 @@ class PyGloveRLWorker(rl_worker.RLWorker):
   ) -> worker_util.EvaluationResult:
     if metadata:
       dna = pg.from_json_str(metadata)
-      self._policy.update_dna(dna)  # pytype: disable=attribute-error
+      self._policy.update_dna(dna)  # pyrefly: ignore[missing-attribute]
     vanilla_evaluation_result = super().work(**kwargs)
     evaluation_result = worker_util.EvaluationResult(
         params_evaluated=vanilla_evaluation_result.params_evaluated,

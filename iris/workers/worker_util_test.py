@@ -24,7 +24,7 @@ class WorkerUtilTest(absltest.TestCase):
     result1 = worker_util.EvaluationResult(
         params_evaluated=np.zeros(6),
         value=np.float64(5.0),
-        obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
+        obs_norm_buffer_data={
             'n': 5,  # pyrefly: ignore[bad-assignment]
             'mean': np.zeros(7),
             'unnorm_var': np.ones(7),
@@ -35,7 +35,7 @@ class WorkerUtilTest(absltest.TestCase):
     result2 = worker_util.EvaluationResult(
         params_evaluated=np.zeros(6),
         value=np.float64(10.0),
-        obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
+        obs_norm_buffer_data={
             'n': 10,  # pyrefly: ignore[bad-assignment]
             'mean': np.ones(7),
             'unnorm_var': 2 * np.ones(7),

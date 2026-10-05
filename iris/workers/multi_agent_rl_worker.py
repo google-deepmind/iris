@@ -32,7 +32,7 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
   float.
   """
 
-  def work(  # pytype: disable=signature-mismatch  # overriding-default-value-checks
+  def work(  # pyrefly: ignore[bad-override]
       self,
       params_to_eval: np.ndarray,
       obs_norm_state: Optional[Mapping[str, np.ndarray]] = None,

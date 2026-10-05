@@ -79,7 +79,7 @@ class AdaptationOptimizersTest(parameterized.TestCase):
     num_adapted_evals = 4
     num_meta_evals = 4
     adaptation = maml_worker.HillClimbAdaptation(
-        parallel_alg=parallel_alg,  # pytype: disable=wrong-arg-types
+        parallel_alg=parallel_alg,  # pyrefly: ignore[bad-argument-type]
         num_iterations=num_iterations,
         num_iteration_suggestions=num_iteration_suggestions,
         num_adapted_evals=num_adapted_evals,
@@ -124,7 +124,7 @@ class AdaptationOptimizersTest(parameterized.TestCase):
     num_adapted_evals = 4
     num_meta_evals = 4
     adaptation = maml_worker.HillClimbAdaptation(
-        parallel_alg=parallel_alg,  # pytype: disable=wrong-arg-types
+        parallel_alg=parallel_alg,  # pyrefly: ignore[bad-argument-type]
         num_iterations=num_iterations,
         num_iteration_suggestions=num_iteration_suggestions,
         num_adapted_evals=num_adapted_evals,

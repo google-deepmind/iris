@@ -31,13 +31,16 @@ class HillClimbController(base_controller.BaseController):
     super().__init__(dna_spec, batch_size)
     self._controller = pg.evolution.hill_climb(
         pg.evolution.mutators.Uniform(),
-        batch_size=batch_size, init_population_size=1, seed=seed)  # pytype: disable=wrong-arg-types  # gen-stub-imports
+        batch_size=batch_size,
+        init_population_size=1,
+        seed=seed,
+    )
     self._controller.setup(self._dna_spec)
 
   def get_state(self):
     # TODO: Add checkpointing logic for HillClimb.
     return None
 
-  def set_state(self, serialized_state):  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def set_state(self, serialized_state):  # pyrefly: ignore[bad-override]
     # TODO: See above.
     pass

@@ -33,13 +33,14 @@ class NEATController(base_controller.BaseController):
     self._controller = pg.evolution.neat(
         population_size=population_size,
         mutator=pg.evolution.mutators.Uniform(),
-        seed=seed)  # pytype: disable=wrong-arg-types  # gen-stub-imports
+        seed=seed,
+    )
     self._controller.setup(self._dna_spec)
 
   def get_state(self):
     # TODO: Add checkpointing logic for NEAT.
     return None
 
-  def set_state(self, serialized_state):  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
+  def set_state(self, serialized_state):  # pyrefly: ignore[bad-override]
     # TODO: See above.
     pass

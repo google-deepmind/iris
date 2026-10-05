@@ -24,11 +24,9 @@ class ImageEncoderTest(absltest.TestCase):
     """Tests the output of ImageEncoder layer."""
     input_layer = tf.keras.layers.Input(
         batch_input_shape=(2, 5, 6, 2), dtype="float", name="input")
-    output_layer = keras_image_encoder_layer.ImageEncoder(  # pyrefly: ignore[not-callable]
-        patch_height=2,
-        patch_width=2,
-        stride_height=1,
-        stride_width=1)(input_layer)
+    output_layer = keras_image_encoder_layer.ImageEncoder(
+        patch_height=2, patch_width=2, stride_height=1, stride_width=1
+    )(input_layer)
     model = tf.keras.models.Model(inputs=[input_layer], outputs=[output_layer])
     images = np.arange(2*5*6*2).reshape((2, 5, 6, 2))
     encoding, centers = model.predict(images)[0]

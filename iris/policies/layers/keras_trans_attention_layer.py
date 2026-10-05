@@ -32,7 +32,8 @@ class FavorTransAttention(tf.keras.layers.Layer):
 
   def __init__(
       self,
-      kernel_transformation: Callable[..., tf.Tensor],) -> None:  # pytype: disable=annotation-type-mismatch
+      kernel_transformation: Callable[..., tf.Tensor],
+  ) -> None:
     """Initializes FavorTransAttention layer.
 
     Args:

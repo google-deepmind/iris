@@ -80,7 +80,7 @@ class RLProxyWorker(rl_worker.RLWorker):
     logging.info("RLProxyWorker: action space: %s", self._env.action_space)
 
   # pylint: disable=arguments-renamed
-  def work(  # pytype: disable=signature-mismatch  # overriding-default-value-checks
+  def work(  # pyrefly: ignore[bad-override]
       self,
       params_to_eval: np.ndarray,
       obs_norm_state: Optional[Mapping[str, np.ndarray]] = None,
