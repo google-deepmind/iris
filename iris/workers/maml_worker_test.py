@@ -158,7 +158,7 @@ class MamlWorkerTest(parameterized.TestCase):
       (maml_worker.HillClimbAdaptation,), (maml_worker.GradientAdaptation,)
   )
   def test_maml_rl_worker(self, adaptation_cls):
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = linear_policy.LinearPolicy(
         ob_space=env.observation_space, ac_space=env.action_space
     )
