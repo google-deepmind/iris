@@ -50,10 +50,11 @@ class TestEnv(gym.Env):
 
   def step(self, action):
     del action
-    return np.zeros(self._ob_dim), 1.0, False, {}
+    return np.zeros(self._ob_dim), 1.0, False, False, {}
 
-  def reset(self):
-    return np.zeros(self._ob_dim)
+  def reset(self, *, seed=None, options=None):
+    del seed, options
+    return np.zeros(self._ob_dim), {}
 
   def render(self, mode: str = "rgb_array"):
     return np.zeros((16, 16))
