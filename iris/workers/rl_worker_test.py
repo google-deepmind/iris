@@ -26,7 +26,7 @@ from absl.testing import parameterized
 class RlWorkerTest(parameterized.TestCase):
 
   def test_rl_worker(self):
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = linear_policy.LinearPolicy(
         ob_space=env.observation_space, ac_space=env.action_space
     )
@@ -68,8 +68,8 @@ class RlWorkerTest(parameterized.TestCase):
     self.assertIn('Num invalid rollouts: 0', logs.output[-1])
     self.assertLen(logs.output, 401)
     self.assertLessEqual(result1.value, 0)
-    self.assertEqual(result1.metrics['extra_metric'], 1.0)
-    self.assertLessEqual(result1.metrics['summed_extra_metric'], 200.0)
+    self.assertEqual(result1.metrics['extra_metric'], 1.0)  # pyrefly: ignore[unsupported-operation]
+    self.assertLessEqual(result1.metrics['summed_extra_metric'], 200.0)  # pyrefly: ignore[unsupported-operation]
 
     result2 = worker_obj.work(
         params_to_eval=np.ones(3),
@@ -103,8 +103,13 @@ class RlWorkerTest(parameterized.TestCase):
         self._max_rollouts = max_rollouts
         self._num_rollouts = 0
 
-      def step(self, action):
-        obs, reward, done, info = super().step(action)
+      def step(self, action):  # pyrefly: ignore[bad-override]
+        step_res = super().step(action)
+        if len(step_res) == 5:
+          obs, reward, terminated, truncated, info = step_res
+          done = terminated or truncated
+        else:
+          obs, reward, done, info = step_res
         if done:
           self._num_rollouts += 1
         if done and self._retry_rollout_info_flag:
@@ -113,7 +118,7 @@ class RlWorkerTest(parameterized.TestCase):
           )
         return obs, reward, done, info
 
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     env = _RolloutEnv(env)
     policy = linear_policy.LinearPolicy(
         ob_space=env.observation_space, ac_space=env.action_space
@@ -156,7 +161,7 @@ class RlWorkerTest(parameterized.TestCase):
       )
       self.assertLen(logs.output, 400 * expected_rollouts + 1)
       self.assertLessEqual(result1.value, 0)
-      self.assertLessEqual(result1.metrics['extra_metric'], 500.0)
+      self.assertLessEqual(result1.metrics['extra_metric'], 500.0)  # pyrefly: ignore[unsupported-operation]
       self.assertEqual(env._num_rollouts, expected_rollouts)
 
       result2 = worker_obj.work(
@@ -168,7 +173,7 @@ class RlWorkerTest(parameterized.TestCase):
 
   @parameterized.parameters((None, 0), (0, 0), (1, 1), (2, 2), (3, 3))
   def test_rl_worker_with_iteration(self, iteration, expected_iteration):
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = linear_policy.LinearPolicy(
         ob_space=env.observation_space, ac_space=env.action_space
     )
@@ -219,7 +224,7 @@ class RlWorkerTest(parameterized.TestCase):
       ) -> np.ndarray | dict[str, np.ndarray]:
         return self._ac_space.sample()
 
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = _DummyPolicy(
         ob_space=env.observation_space, ac_space=env.action_space
     )

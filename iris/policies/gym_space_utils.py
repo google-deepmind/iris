@@ -23,13 +23,13 @@ def filter_space(space: gym.Space,
                  selected: Sequence[Union[str, int]]) -> gym.Space:
   """Filters gym space based on list of selected keys or dimensions."""
   if isinstance(space, gym.spaces.Box):
-    low = space.low.take(selected)
-    high = space.high.take(selected)
+    low = space.low.take(selected)  # pyrefly: ignore[no-matching-overload]
+    high = space.high.take(selected)  # pyrefly: ignore[no-matching-overload]
     return gym.spaces.Box(low=low, high=high)
   elif isinstance(space, gym.spaces.Dict):
     filtered_space = {}
     for sensor in selected:
-      filtered_space[sensor] = space[sensor]
+      filtered_space[sensor] = space[sensor]  # pyrefly: ignore[bad-index]
     return gym.spaces.Dict(filtered_space)
   else:
     raise NotImplementedError
@@ -38,8 +38,8 @@ def filter_space(space: gym.Space,
 def extend_space(space: gym.Space, key: str, value: gym.Space):
   """Adds new keys or dimensions to the space."""
   if isinstance(space, gym.spaces.Box):
-    low = np.concatenate((space.low, value.low))
-    high = np.concatenate((space.high, value.high))
+    low = np.concatenate((space.low, value.low))  # pyrefly: ignore[missing-attribute]
+    high = np.concatenate((space.high, value.high))  # pyrefly: ignore[missing-attribute]
     return gym.spaces.Box(low=low, high=high)
   elif isinstance(space, gym.spaces.Dict):
     extended_space = dict(space.spaces)

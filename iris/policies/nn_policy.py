@@ -61,7 +61,7 @@ class FullyConnectedNeuralNetworkPolicy(base_policy.BasePolicy):
     Returns:
       The actions in reinforcement learning.
     """
-    ob = utils.flatten(self._ob_space, ob)
+    ob = utils.flatten(self._ob_space, ob)  # pyrefly: ignore[bad-assignment]
     ith_layer_result = ob
     num_layers = len(self._layer_sizes)
     for ith_layer in range(num_layers - 1):

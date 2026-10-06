@@ -49,7 +49,7 @@ class LinearPolicy(base_policy.BasePolicy):
     Returns:
       The actions in reinforcement learning.
     """
-    ob = utils.flatten(self._ob_space, ob)
+    ob = utils.flatten(self._ob_space, ob)  # pyrefly: ignore[bad-assignment]
     matrix_weights = np.reshape(self._weights, (self._ac_dim, self._ob_dim))
     actions = self._activation(np.dot(matrix_weights, ob))  # pyrefly: ignore[no-matching-overload, not-callable]
     actions = utils.unflatten(self._ac_space, actions)

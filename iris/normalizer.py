@@ -119,8 +119,8 @@ class ActionRangeDenormalizer(Normalizer):
       self, space: gym.Space, ignored_keys: Optional[Sequence[str]] = None
   ) -> None:
     super().__init__(space, ignored_keys)
-    low = self._flat_space.low
-    high = self._flat_space.high
+    low = self._flat_space.low  # pyrefly: ignore[missing-attribute]
+    high = self._flat_space.high  # pyrefly: ignore[missing-attribute]
     self._state["mid"] = (low + high) / 2.0
     self._state["half_range"] = (high - low) / 2.0
 
@@ -145,9 +145,9 @@ class ActionRangeDenormalizer(Normalizer):
     del update_buffer  # No buffer to update
     action = action.copy()
     ignored_action = self._filter_ignored_input(action)  # pyrefly: ignore[bad-argument-type]
-    action = utils.flatten(self._space, action)
+    action = utils.flatten(self._space, action)  # pyrefly: ignore[bad-argument-type, bad-assignment]
     action = (action * self._state["half_range"]) + self._state["mid"]
-    action = utils.unflatten(self._space, action)
+    action = utils.unflatten(self._space, action)  # pyrefly: ignore[bad-argument-type, bad-assignment]
     action = self._add_ignored_input(action, ignored_action)  # pyrefly: ignore[bad-argument-type]
     return action
 
@@ -159,8 +159,8 @@ class ObservationRangeNormalizer(Normalizer):
       self, space: gym.Space, ignored_keys: Optional[Sequence[str]] = None
   ) -> None:
     super().__init__(space, ignored_keys)
-    low = self._flat_space.low
-    high = self._flat_space.high
+    low = self._flat_space.low  # pyrefly: ignore[missing-attribute]
+    high = self._flat_space.high  # pyrefly: ignore[missing-attribute]
     self._state["mid"] = (low + high) / 2.0
     self._state["half_range"] = (high - low) / 2.0
 
@@ -186,9 +186,9 @@ class ObservationRangeNormalizer(Normalizer):
     observation = observation.copy()
     ignored_observation = self._filter_ignored_input(observation)  # pyrefly: ignore[bad-argument-type]
 
-    observation = utils.flatten(self._space, observation)
+    observation = utils.flatten(self._space, observation)  # pyrefly: ignore[bad-argument-type, bad-assignment]
     observation = (observation - self._state["mid"]) / self._state["half_range"]
-    observation = utils.unflatten(self._space, observation)
+    observation = utils.unflatten(self._space, observation)  # pyrefly: ignore[bad-argument-type, bad-assignment]
     observation = self._add_ignored_input(observation, ignored_observation)  # pyrefly: ignore[bad-argument-type]
     return observation
 
@@ -201,9 +201,9 @@ class RunningMeanStdNormalizer(Normalizer):
   ) -> None:
     super().__init__(space, ignored_keys)
     shape = self._flat_space.shape
-    self._state[buffer.MEAN] = np.zeros(shape, dtype=np.float64)
-    self._state[buffer.STD] = np.ones(shape, dtype=np.float64)
-    self._buffer = buffer.MeanStdBuffer(shape)
+    self._state[buffer.MEAN] = np.zeros(shape, dtype=np.float64)  # pyrefly: ignore[no-matching-overload]
+    self._state[buffer.STD] = np.ones(shape, dtype=np.float64)  # pyrefly: ignore[no-matching-overload]
+    self._buffer = buffer.MeanStdBuffer(shape)  # pyrefly: ignore[bad-argument-type]
 
   @property
   def buffer(self) -> buffer.MeanStdBuffer:
@@ -216,12 +216,12 @@ class RunningMeanStdNormalizer(Normalizer):
   ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
     observation = observation.copy()
     ignored_observation = self._filter_ignored_input(observation)  # pyrefly: ignore[bad-argument-type]
-    observation = utils.flatten(self._space, observation)
+    observation = utils.flatten(self._space, observation)  # pyrefly: ignore[bad-argument-type, bad-assignment]
     if update_buffer:
       self._buffer.push(observation)  # pyrefly: ignore[bad-argument-type]
     observation -= self._state[buffer.MEAN]
     observation /= self._state[buffer.STD] + _EPSILON
-    observation = utils.unflatten(self._space, observation)
+    observation = utils.unflatten(self._space, observation)  # pyrefly: ignore[bad-argument-type, bad-assignment]
     observation = self._add_ignored_input(observation, ignored_observation)  # pyrefly: ignore[bad-argument-type]
     return observation
 
@@ -232,7 +232,7 @@ class RunningMeanStdAgentVsAgentNormalizer(RunningMeanStdNormalizer):
   def __init__(self, space: gym.Space) -> None:
     # We use the "ignored_keys" to split the agent obs to process individually.
     super().__init__(space, ignored_keys=["opp"])
-    self._buffer = buffer.MeanStdBuffer(shape=self._flat_space.shape)
+    self._buffer = buffer.MeanStdBuffer(shape=self._flat_space.shape)  # pyrefly: ignore[bad-argument-type]
 
   @property
   def buffer(self) -> buffer.MeanStdBuffer:
@@ -246,14 +246,14 @@ class RunningMeanStdAgentVsAgentNormalizer(RunningMeanStdNormalizer):
     observation = observation.copy()
 
     opp_observation = self._filter_ignored_input(observation)  # pyrefly: ignore[bad-argument-type]
-    opp_observation = utils.flatten(self._space_ignored, opp_observation)
+    opp_observation = utils.flatten(self._space_ignored, opp_observation)  # pyrefly: ignore[bad-argument-type]
 
-    arm_observation = utils.flatten(self._space, observation)
+    arm_observation = utils.flatten(self._space, observation)  # pyrefly: ignore[bad-argument-type]
     if update_buffer:
-      self._buffer.push(arm_observation)
+      self._buffer.push(arm_observation)  # pyrefly: ignore[bad-argument-type]
       # Adding the opponent observations to the buffer greatly speeds learning
       # in self-play scenarios.
-      self._buffer.push(opp_observation)
+      self._buffer.push(opp_observation)  # pyrefly: ignore[bad-argument-type]
 
     def _normalized(obs, unflatten_space):
       obs -= self._state[buffer.MEAN]

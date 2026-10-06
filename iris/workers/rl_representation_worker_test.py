@@ -24,7 +24,7 @@ from absl.testing import absltest
 class RlRepresentationWorkerTest(absltest.TestCase):
 
   def test_rl_representation_worker(self):
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = linear_policy.LinearPolicy(
         ob_space=env.observation_space, ac_space=env.action_space
     )

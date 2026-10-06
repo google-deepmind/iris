@@ -118,7 +118,7 @@ class KerasPolicy(base_policy.BasePolicy):
     Returns:
       The actions in reinforcement learning.
     """
-    ob = utils.flatten(self._ob_space, ob)
-    actions = self.model(np.array([ob])).numpy()[0]
+    ob = utils.flatten(self._ob_space, ob)  # pyrefly: ignore[bad-assignment]
+    actions = self.model(np.array([ob])).numpy()[0]  # pyrefly: ignore[not-callable]
     actions = utils.unflatten(self._ac_space, actions)
     return actions

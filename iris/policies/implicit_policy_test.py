@@ -29,9 +29,9 @@ class ImplicitPolicyTest(absltest.TestCase):
         'sensor2': spaces.Box(low=-10, high=10, shape=(2,)),
     })
     ac_space = spaces.Box(low=-10, high=10, shape=(3,))
-    action_low = utils.flatten_space(ac_space).low
-    action_high = utils.flatten_space(ac_space).high
-    state_dim = len(utils.flatten_space(ob_space).low)
+    action_low = utils.flatten_space(ac_space).low  # pyrefly: ignore[missing-attribute]
+    action_high = utils.flatten_space(ac_space).high  # pyrefly: ignore[missing-attribute]
+    state_dim = len(utils.flatten_space(ob_space).low)  # pyrefly: ignore[missing-attribute]
     action_dim = len(action_low)
     latent_dim = 30
     st_hidden_layer_sizes = [100, 100]
@@ -67,9 +67,9 @@ class ImplicitPolicyTest(absltest.TestCase):
     })
     ac_space = spaces.Box(low=15, high=16, shape=(10,))
 
-    action_low = utils.flatten_space(ac_space).low
-    action_high = utils.flatten_space(ac_space).high
-    state_dim = len(utils.flatten_space(ob_space).low)
+    action_low = utils.flatten_space(ac_space).low  # pyrefly: ignore[missing-attribute]
+    action_high = utils.flatten_space(ac_space).high  # pyrefly: ignore[missing-attribute]
+    state_dim = len(utils.flatten_space(ob_space).low)  # pyrefly: ignore[missing-attribute]
     action_dim = len(action_low)
     latent_dim = 54
     st_hidden_layer_sizes = [45, 55]

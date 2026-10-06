@@ -113,7 +113,7 @@ class RLRepresentationWorker(rl_worker.RLWorker):
     if obs_norm_state is not None:
       self._observation_normalizer.state = obs_norm_state  # pyrefly: ignore[bad-argument-type]
 
-    if env_seed is not None:
+    if env_seed is not None and hasattr(self._env, "seed"):
       self._env.seed(env_seed)
 
     video = None
@@ -122,7 +122,19 @@ class RLRepresentationWorker(rl_worker.RLWorker):
 
     reward = 0.0
     metrics = collections.defaultdict(float)
-    obs = self._env.reset()
+    reset_res = (
+        self._env.reset(seed=env_seed)
+        if env_seed is not None and not hasattr(self._env, "seed")
+        else self._env.reset()
+    )
+    if (
+        isinstance(reset_res, tuple)
+        and len(reset_res) == 2
+        and isinstance(reset_res[1], dict)
+    ):
+      obs = reset_res[0]
+    else:
+      obs = reset_res
     time_step = ts.TimeStep(
         step_type=ts.StepType.FIRST,
         reward=np.array(0.0, dtype=np.float32),
@@ -136,7 +148,12 @@ class RLRepresentationWorker(rl_worker.RLWorker):
       action = self._policy.act(normalized_obs)
       action_step = policy_step.PolicyStep(action)  # pyrefly: ignore[missing-argument]
       action = self._action_denormalizer(action)
-      next_obs, r, done, info = self._env.step(action)
+      step_res = self._env.step(action)
+      if len(step_res) == 5:
+        next_obs, r, terminated, truncated, info = step_res
+        done = terminated or truncated
+      else:
+        next_obs, r, done, info = step_res
       reward += r
       next_time_step = ts.TimeStep(
           step_type=ts.StepType.LAST if done else ts.StepType.MID,
@@ -166,13 +183,18 @@ class RLRepresentationWorker(rl_worker.RLWorker):
       time_step = next_time_step
 
       if record_video and video is not None:
-        video.add_frame(self._env.render(mode="rgb_array"))
+        try:
+          frame = self._env.render(mode="rgb_array")
+        except TypeError:
+          frame = self._env.render()
+        video.add_frame(frame)
       if enable_logging:
         logging.info("Step: %d, Reward: %f, Done: %d", st, r, done)
         if mdict:
           logging.info("Metrics: %s", mdict)
       if done:
-        next_obs, r, _, _ = self._env.step(action)
+        step_res = self._env.step(action)
+        next_obs = step_res[0]
         next_time_step = ts.TimeStep(
             step_type=ts.StepType.FIRST,
             reward=np.array(0.0, dtype=np.float32),

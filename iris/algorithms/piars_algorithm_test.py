@@ -28,7 +28,7 @@ class AlgorithmTest(parameterized.TestCase):
       (False, False),
   )
   def test_ars_gradient(self, orthogonal_suggestions, quasirandom_suggestions):
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = keras_pi_policy.KerasPIPolicy(
         ob_space=env.observation_space,
         ac_space=env.action_space,

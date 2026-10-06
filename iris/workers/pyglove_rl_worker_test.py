@@ -24,7 +24,7 @@ from absl.testing import absltest
 class PygloveRlWorkerTest(absltest.TestCase):
 
   def test_pyglove_rl_worker(self):
-    env = gym.make(id='Pendulum-v0')
+    env = gym.make(id='Pendulum-v1')
     policy = nas_policy.NumpyEdgeSparsityPolicy(
         ob_space=env.observation_space,
         ac_space=env.action_space,
