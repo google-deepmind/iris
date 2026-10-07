@@ -56,7 +56,7 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     for image_label in self._image_input_labels:
       vision_input_layers.append(
           tf.keras.layers.Input(
-              shape=self._ob_space[image_label].shape,  # pyrefly: ignore[bad-index]
+              shape=self._ob_space[image_label].shape,
               batch_size=1,
               dtype="float32",
               name="vision_input" + image_label,
@@ -68,7 +68,7 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     if isinstance(self._ob_space, gym.spaces.Box):
       self._other_ob_space = self._ob_space
     else:
-      self._other_ob_space = self._ob_space.spaces.copy()  # pyrefly: ignore[missing-attribute]
+      self._other_ob_space = self._ob_space.spaces.copy()
       for input_label in self._image_input_labels:
         del self._other_ob_space[input_label]
       self._other_ob_space = spaces.Dict(self._other_ob_space)
@@ -138,15 +138,14 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     if use_spatial_softmax:
       x = spatial_softmax.SpatialSoftmax(data_format="channels_last")(x)
     else:
-      x = tf.keras.layers.Flatten()(x)  # pyrefly: ignore[not-callable]
+      x = tf.keras.layers.Flatten()(x)
 
     # Encoding image into a feature vector.
-    return tf.keras.layers.Dense(  # pyrefly: ignore[not-callable]
+    return tf.keras.layers.Dense(
         image_feature_length, activation=final_vision_activation
     )(x)
 
-  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
-  def _build_model(
+  def _build_model(  # pyrefly: ignore[bad-override]
       self, state_dim: int, fc_layer_sizes: Sequence[int], **kwargs
   ) -> None:
     # hidden state input
@@ -162,8 +161,6 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     self.model = tf.keras.models.Model(
         inputs=state_input, outputs=[action_output]
     )
-
-  # pytype: enable=signature-mismatch  # overriding-parameter-count-checks
 
   def build_h(
       self,
@@ -204,7 +201,7 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
 
     # state: fully connected layers.
     for h_fc_layer_size in h_fc_layer_sizes:
-      x = tf.keras.layers.Dense(h_fc_layer_size, activation="tanh")(x)  # pyrefly: ignore[not-callable]
+      x = tf.keras.layers.Dense(h_fc_layer_size, activation="tanh")(x)
     outputs = [x, vision_output] if vision_output is not None else x
     self.h_model = tf.keras.models.Model(inputs=inputs, outputs=outputs)
 
@@ -220,9 +217,9 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     )
     x = state_input
     for f_fc_layer_size in f_fc_layer_sizes:
-      x = tf.keras.layers.Dense(f_fc_layer_size, activation="tanh")(x)  # pyrefly: ignore[not-callable]
-    p = tf.keras.layers.Dense(self._ac_dim, activation="tanh")(x)  # pyrefly: ignore[not-callable]
-    v = tf.keras.layers.Dense(num_supports)(x)  # pyrefly: ignore[not-callable]
+      x = tf.keras.layers.Dense(f_fc_layer_size, activation="tanh")(x)
+    p = tf.keras.layers.Dense(self._ac_dim, activation="tanh")(x)
+    v = tf.keras.layers.Dense(num_supports)(x)
     self.f_model = tf.keras.models.Model(inputs=state_input, outputs=[p, v])
 
   def build_g(self, state_dim: int, g_fc_layer_sizes: Sequence[int], **kwargs):
@@ -238,9 +235,9 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
 
     x = tf.keras.layers.concatenate([state_input, action_input])
     for g_fc_layer_size in g_fc_layer_sizes:
-      x = tf.keras.layers.Dense(g_fc_layer_size, activation="tanh")(x)  # pyrefly: ignore[not-callable]
-    u_next = tf.keras.layers.Dense(1)(x)  # pyrefly: ignore[not-callable]
-    s_next = tf.keras.layers.Dense(state_dim, activation="tanh")(x)  # pyrefly: ignore[not-callable]
+      x = tf.keras.layers.Dense(g_fc_layer_size, activation="tanh")(x)
+    u_next = tf.keras.layers.Dense(1)(x)
+    s_next = tf.keras.layers.Dense(state_dim, activation="tanh")(x)
     self.g_model = tf.keras.models.Model(
         inputs=[state_input, action_input], outputs=[u_next, s_next]
     )
@@ -251,8 +248,8 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     )
 
     x = state_input
-    x = tf.keras.layers.Dense(64, activation="tanh")(x)  # pyrefly: ignore[not-callable]
-    z = tf.keras.layers.Dense(state_dim)(x)  # pyrefly: ignore[not-callable]
+    x = tf.keras.layers.Dense(64, activation="tanh")(x)
+    z = tf.keras.layers.Dense(state_dim)(x)
     self.px_model = tf.keras.models.Model(inputs=state_input, outputs=z)
 
   def build_py(self, state_dim: int, image_feature_length: int, **kwargs):
@@ -264,8 +261,8 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     )
 
     x = state_input
-    x = tf.keras.layers.Dense(64, activation="tanh")(x)  # pyrefly: ignore[not-callable]
-    z = tf.keras.layers.Dense(state_dim)(x)  # pyrefly: ignore[not-callable]
+    x = tf.keras.layers.Dense(64, activation="tanh")(x)
+    z = tf.keras.layers.Dense(state_dim)(x)
     self.py_model = tf.keras.models.Model(inputs=state_input, outputs=z)
 
   def act(
@@ -295,8 +292,8 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
       inputs.append(np.array([other_input]))
 
     # Run model.
-    s, _ = self.h_model(inputs)  # pyrefly: ignore[not-callable]
-    output = self.model(s)  # pyrefly: ignore[not-callable]
+    s, _ = self.h_model(inputs)
+    output = self.model(s)
 
     # Parse model output.
     actions = output.numpy()
@@ -326,13 +323,13 @@ class KerasPIPolicy(keras_policy.KerasPolicy):
     inputs.append(np.array([other_input]))
 
     # Run model.
-    s, _ = self.h_model(inputs)  # pyrefly: ignore[not-callable]
+    s, _ = self.h_model(inputs)
     reward = 0.0
     for _ in range(rollout_length):
-      action = self.model(s)  # pyrefly: ignore[not-callable]
-      u_next, s = self.g_model([s, action])  # pyrefly: ignore[not-callable]
+      action = self.model(s)
+      u_next, s = self.g_model([s, action])
       reward += u_next
-    _, z = self.f_model(s)  # pyrefly: ignore[not-callable]
+    _, z = self.f_model(s)
     vd = tf.nn.softmax(z)
     supports = tf.linspace(-10.0, 10.0, 51)
     v = tf.reduce_sum(vd * supports[None, ...], axis=-1)

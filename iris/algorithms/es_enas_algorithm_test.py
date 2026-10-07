@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pytype: disable=attribute-error
 from gym import spaces
 from iris.algorithms import es_enas_algorithm
 from iris.policies import nas_policy
@@ -44,7 +43,7 @@ def make_evaluation_results(suggestion_list):
         value=np.random.uniform(),
         metadata=suggestion['metadata'])
     eval_results.append(evaluation_result)
-  eval_results.append(worker_util.EvaluationResult(np.empty(0), 0))  # pytype: disable=wrong-arg-types  # numpy-scalars
+  eval_results.append(worker_util.EvaluationResult(np.empty(0), 0))
   return eval_results
 
 

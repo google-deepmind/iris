@@ -90,7 +90,7 @@ class ES_ENAS(ars_algorithm.AugmentedRandomSearch):  # pylint: disable=invalid-n
         return dna
 
       if self._multithreading:
-        dna_list = self._pool.map(proper_unserialize, eval_metadatas)  # pytype:disable=attribute-error
+        dna_list = self._pool.map(proper_unserialize, eval_metadatas)
       else:
         dna_list = map(proper_unserialize, eval_metadatas)
       dna_list = list(dna_list)
@@ -108,7 +108,7 @@ class ES_ENAS(ars_algorithm.AugmentedRandomSearch):  # pylint: disable=invalid-n
       # Note that for faster serialization, DNASpec is removed from DNA.
       dna_list = [self._controller.propose_dna() for _ in vanilla_suggestions]
       if self._multithreading:
-        metadata_list = self._pool.map(pg.to_json_str, dna_list)  # pytype:disable=attribute-error
+        metadata_list = self._pool.map(pg.to_json_str, dna_list)
       else:
         metadata_list = map(pg.to_json_str, dna_list)
       metadata_list = list(metadata_list)
@@ -130,7 +130,7 @@ class ES_ENAS(ars_algorithm.AugmentedRandomSearch):  # pylint: disable=invalid-n
     return vanilla_state
 
   def _set_state(self, new_state: Dict[str, Any]) -> None:
-    super()._set_state(new_state)  # pytype: disable=attribute-error
+    super()._set_state(new_state)
     self._interval_counter = new_state["interval_counter"]
     self._dna_spec = pg.from_json_str(new_state["serialized_dna_spec"])
     self._controller = self._controller_fn(dna_spec=self._dna_spec)

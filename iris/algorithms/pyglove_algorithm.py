@@ -70,7 +70,7 @@ class PyGloveAlgorithm(algorithm.BlackboxAlgorithm):
       return dna
 
     if self._multithreading:
-      dna_list = self._pool.map(proper_unserialize, eval_metadatas)  # pytype:disable=attribute-error
+      dna_list = self._pool.map(proper_unserialize, eval_metadatas)
     else:
       dna_list = map(proper_unserialize, eval_metadatas)
     dna_list = list(dna_list)
@@ -89,7 +89,7 @@ class PyGloveAlgorithm(algorithm.BlackboxAlgorithm):
     ]
     # Note that for faster serialization, DNASpec is removed from DNA.
     if self._multithreading:
-      metadata_list = self._pool.map(pg.to_json_str, dna_list)  # pytype:disable=attribute-error
+      metadata_list = self._pool.map(pg.to_json_str, dna_list)
     else:
       metadata_list = map(pg.to_json_str, dna_list)
 
@@ -104,8 +104,8 @@ class PyGloveAlgorithm(algorithm.BlackboxAlgorithm):
 
   def _get_state(self) -> Dict[str, Any]:
     vanilla_state = {}
-    vanilla_state["serialized_dna_spec"] = pg.to_json_str(self._dna_spec)  # pytype:disable=attribute-error
-    vanilla_state["controller_alg_state"] = self._controller.get_state()  # pytype:disable=attribute-error
+    vanilla_state["serialized_dna_spec"] = pg.to_json_str(self._dna_spec)
+    vanilla_state["controller_alg_state"] = self._controller.get_state()
     return vanilla_state
 
   def _set_state(self, new_state: Dict[str, Any]) -> None:

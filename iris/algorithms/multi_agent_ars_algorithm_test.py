@@ -49,42 +49,42 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
 
   def _build_evaluation_results(self) -> list[worker_util.EvaluationResult]:
     eval_results = [
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.array([10.0, 11.0, 12.0, 13.0]),
             value=10,
             metrics={'reward_arm': 10, 'reward_opp': -5},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.array([10.0, 11.0, 14.0, 15.0]),
             value=10,
             metrics={'reward_arm': 10, 'reward_opp': -10},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.empty(0),
             value=0,
             metrics={'reward_arm': 0, 'reward_opp': 0},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.array([1.0, 2.0, 3.0, 4.0]),
             value=10,
             metrics={'reward_arm': 10, 'reward_opp': -10},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.array([10.0, 11.0, 12.0, 13.0]),
             value=-10,
             metrics={'reward_arm': -10, 'reward_opp': 5},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.array([10.0, 11.0, 14.0, 15.0]),
             value=-10,
             metrics={'reward_arm': -10, 'reward_opp': 10},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.array([5.0, 6.0, 7.0, 8.0]),
             value=-10,
             metrics={'reward_arm': -10, 'reward_opp': 10},
         ),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(
             params_evaluated=np.empty(0),
             value=0,
             metrics={'reward_arm': 0, 'reward_opp': 0},

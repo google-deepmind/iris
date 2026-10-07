@@ -40,7 +40,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     for image_label in self._image_input_labels:
       vision_input_layers.append(
           tf.keras.layers.Input(
-              shape=self._ob_space[image_label].shape,  # pyrefly: ignore[bad-index]
+              shape=self._ob_space[image_label].shape,
               batch_size=1,
               dtype="float32",
               name="vision_input" + image_label,
@@ -49,7 +49,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     return vision_input_layers
 
   def _create_other_input_layer(self):
-    self._other_ob_space = self._ob_space.spaces.copy()  # pyrefly: ignore[missing-attribute]
+    self._other_ob_space = self._ob_space.spaces.copy()
     for input_label in self._image_input_labels:
       del self._other_ob_space[input_label]
     self._other_ob_space = spaces.Dict(self._other_ob_space)
@@ -117,10 +117,10 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     if use_spatial_softmax:
       x = spatial_softmax.SpatialSoftmax(data_format="channels_last")(x)
     else:
-      x = tf.keras.layers.Flatten()(x)  # pyrefly: ignore[not-callable]
+      x = tf.keras.layers.Flatten()(x)
 
     # Encoding image into a feature vector.
-    return tf.keras.layers.Dense(  # pyrefly: ignore[not-callable]
+    return tf.keras.layers.Dense(
         image_feature_length, activation=final_vision_activation
     )(x)
 
@@ -140,14 +140,13 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     )
     inputs.append(lstm_h_state_input)
     inputs.append(lstm_c_state_input)
-    x = tf.keras.layers.Reshape((1, -1))(x)  # pyrefly: ignore[not-callable]
-    x, h_state, c_state = tf.keras.layers.LSTM(  # pyrefly: ignore[not-callable]
+    x = tf.keras.layers.Reshape((1, -1))(x)
+    x, h_state, c_state = tf.keras.layers.LSTM(
         units=self._rnn_units, return_state=True, stateful=True
     )(x, initial_state=[lstm_h_state_input, lstm_c_state_input])
     return x, [h_state, c_state]
 
-  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
-  def _build_model(
+  def _build_model(  # pyrefly: ignore[bad-override]
       self,
       fc_layer_sizes: Sequence[int],
       use_rnn: bool = False,
@@ -209,8 +208,6 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
 
     self.model = tf.keras.models.Model(inputs=inputs, outputs=outputs)
 
-  # pytype: enable=signature-mismatch  # overriding-parameter-count-checks
-
   def reset(self) -> None:
     """Resets the policy's internal state (default LSTM)."""
     lstm_h_state = np.zeros(shape=(1, self._rnn_units), dtype="float32")
@@ -247,7 +244,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
       inputs.append(np.array([other_input]))
 
     # Run model.
-    output = self.model(inputs)  # pyrefly: ignore[not-callable]
+    output = self.model(inputs)
 
     # Parse model output.
     if self._use_rnn:

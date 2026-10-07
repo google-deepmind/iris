@@ -54,7 +54,7 @@ class CMAAlgorithmTest(absltest.TestCase):
                 np.array(suggestion['params_to_eval']),
                 test_fn(np.array(suggestion['params_to_eval']))))
       if i%10 == 0:
-        eval_results[0] = worker_util.EvaluationResult(np.empty(0), 0)  # pytype: disable=wrong-arg-types  # numpy-scalars
+        eval_results[0] = worker_util.EvaluationResult(np.empty(0), 0)
       self.algo.process_evaluations(eval_results)
     np.testing.assert_almost_equal(self.algo._opt_params, _TRUE_OPTIMAL)
 

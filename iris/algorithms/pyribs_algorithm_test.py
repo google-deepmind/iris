@@ -208,7 +208,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
         worker_util.EvaluationResult(
             params_evaluated=np.ones((13,)),
             value=1,
-            obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
+            obs_norm_buffer_data={
                 buffer.N: 1,  # pyrefly: ignore[bad-assignment]
                 buffer.STD: np.ones((8,)),
                 buffer.MEAN: np.ones((8,)),
@@ -219,7 +219,7 @@ class PyribsAlgorithmTest(absltest.TestCase):
         worker_util.EvaluationResult(
             params_evaluated=np.ones((13,) * 2),
             value=2,
-            obs_norm_buffer_data={  # pyrefly: ignore[bad-argument-type]
+            obs_norm_buffer_data={
                 buffer.N: 2,  # pyrefly: ignore[bad-assignment]
                 buffer.STD: np.ones((8,)) * 2,
                 buffer.MEAN: np.ones((8,)) * 2,

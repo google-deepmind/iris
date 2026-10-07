@@ -87,7 +87,7 @@ def vector_decoding_function(A, b, optimization_parameters, loss_function):
   result = x.value
   res_list = []
   for i in range(n):
-    res_list.append(result[i])  # pyrefly: ignore[unsupported-operation]
+    res_list.append(result[i])
   return np.array(res_list)
 
 

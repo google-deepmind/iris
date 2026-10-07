@@ -22,8 +22,7 @@ import tensorflow as tf
 class KerasNNPolicy(keras_policy.KerasPolicy):
   """Policy class that computes action by running feed fwd neural network."""
 
-  # pytype: disable=signature-mismatch  # overriding-parameter-count-checks
-  def _build_model(
+  def _build_model(  # pyrefly: ignore[bad-override]
       self,
       hidden_layer_sizes: Sequence[int],
       activation: str = "tanh",
@@ -59,5 +58,3 @@ class KerasNNPolicy(keras_policy.KerasPolicy):
     self.model = tf.keras.models.Model(
         inputs=[input_layer], outputs=[output_layer]
     )
-
-  # pytype: enable=signature-mismatch  # overriding-parameter-count-checks

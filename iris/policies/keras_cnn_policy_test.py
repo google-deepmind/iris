@@ -37,14 +37,14 @@ class KerasCNNPolicyTest(absltest.TestCase):
     policy.reset()
     policy.update_weights(new_weights=np.ones(38))
     image = np.ones((2, 2, 1))
-    act = policy.act({  # pyrefly: ignore[bad-argument-type]
+    act = policy.act({
         'vision': image,
         'sensor1': [-3, -3],  # pyrefly: ignore[bad-assignment]
         'sensor2': [-3, -3],  # pyrefly: ignore[bad-assignment]
     })
     np.testing.assert_array_almost_equal(act, np.ones((5)), 1)  # pyrefly: ignore[bad-argument-type]
     policy.update_weights(new_weights=np.zeros(38))
-    act = policy.act({  # pyrefly: ignore[bad-argument-type]
+    act = policy.act({
         'vision': image,
         'sensor1': [-3, -3],  # pyrefly: ignore[bad-assignment]
         'sensor2': [-3, -3],  # pyrefly: ignore[bad-assignment]
@@ -82,22 +82,32 @@ class KerasCNNPolicyTest(absltest.TestCase):
     for _ in range(5):
       policy.act(observation)  # pyrefly: ignore[bad-argument-type]
       rnn_state = policy._rnn_state
-      np.testing.assert_raises(AssertionError,
-                               np.testing.assert_array_almost_equal,
-                               prev_h_state, rnn_state[0])  #  pytype: disable=unsupported-operands
-      np.testing.assert_raises(AssertionError,
-                               np.testing.assert_array_almost_equal,
-                               prev_c_state, rnn_state[1])  #  pytype: disable=unsupported-operands
-      prev_h_state = rnn_state[0]  #  pytype: disable=unsupported-operands
-      prev_c_state = rnn_state[1]  #  pytype: disable=unsupported-operands
+      np.testing.assert_raises(
+          AssertionError,
+          np.testing.assert_array_almost_equal,
+          prev_h_state,
+          rnn_state[0],  # pyrefly: ignore[unsupported-operation]
+      )
+      np.testing.assert_raises(
+          AssertionError,
+          np.testing.assert_array_almost_equal,
+          prev_c_state,
+          rnn_state[1],  # pyrefly: ignore[unsupported-operation]
+      )
+      prev_h_state = rnn_state[0]  # pyrefly: ignore[unsupported-operation]
+      prev_c_state = rnn_state[1]  # pyrefly: ignore[unsupported-operation]
 
     # Checks that the LSTM state is reset to zero.
     policy.reset()
     new_rnn_state = policy._rnn_state
-    np.testing.assert_array_almost_equal(new_rnn_state[0],  #  pytype: disable=unsupported-operands
-                                         np.zeros(shape=(1, 2)))
-    np.testing.assert_array_almost_equal(new_rnn_state[0],  #  pytype: disable=unsupported-operands
-                                         np.zeros(shape=(1, 2)))
+    np.testing.assert_array_almost_equal(
+        new_rnn_state[0],  # pyrefly: ignore[unsupported-operation]
+        np.zeros(shape=(1, 2)),
+    )
+    np.testing.assert_array_almost_equal(
+        new_rnn_state[0],  # pyrefly: ignore[unsupported-operation]
+        np.zeros(shape=(1, 2)),
+    )
 
 
 if __name__ == '__main__':

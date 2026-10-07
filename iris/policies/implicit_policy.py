@@ -438,8 +438,9 @@ class MinEnergyActionCalculator(BaseActionCalculator):
     else:
       phi_state = self._energy.linearized_energy_state(state)
       if self._bootstrapped_samples == self._num_samples:
-        return self._actions[np.argmax(
-            np.dot(self._lat_reps_for_actions, phi_state))]  # pyrefly: ignore[bad-argument-type, no-matching-overload]
+        return self._actions[
+            np.argmax(np.dot(self._lat_reps_for_actions, phi_state))  # pyrefly: ignore[no-matching-overload]
+        ]
       else:
         random_indices = np.random.choice(np.arange(len(self._actions)))
         return self._actions[random_indices[np.argmax(
@@ -522,7 +523,8 @@ class SoftmaxEnergyRFSActionCalculator(BaseActionCalculator):
             base_prefix_sum = self._prefix_sum_table[seg_start_index - 1]
           prob = np.dot(  # pyrefly: ignore[no-matching-overload]
               self._prefix_sum_table[seg_end_index - 1] - base_prefix_sum,
-              phi_state)  # pyrefly: ignore[bad-argument-type]
+              phi_state,
+          )
           probs.append(prob)
           start_end_indices.append([seg_start_index, seg_end_index])
           seg_start_index = seg_end_index

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pytype: disable=attribute-error
 from iris.policies import spatial_softmax
 import tensorflow as tf2
 import tensorflow.compat.v1 as tf
@@ -32,13 +31,13 @@ _TEMPERATURE = 2.5
 class SpatialSoftmaxTest(tf.test.TestCase):
 
   def test_with_default(self):
-    out = test_utils.layer_test(
+    out = test_utils.layer_test(  # pyrefly: ignore[missing-attribute]
         spatial_softmax.SpatialSoftmax, input_shape=_INPUT_SHAPE
     )
     self.assertAllEqual(out.shape, (_INPUT_SHAPE[0], _INPUT_SHAPE[3] * 2))
 
   def test_with_preset_temperature(self):
-    test_utils.layer_test(
+    test_utils.layer_test(  # pyrefly: ignore[missing-attribute]
         spatial_softmax.SpatialSoftmax,
         kwargs={'temperature': _TEMPERATURE},
         input_shape=_INPUT_SHAPE,
@@ -50,7 +49,7 @@ class SpatialSoftmaxTest(tf.test.TestCase):
 
   def test_with_channels_first(self):
     input_shape = (16, 128, 32, 32)
-    out = test_utils.layer_test(
+    out = test_utils.layer_test(  # pyrefly: ignore[missing-attribute]
         spatial_softmax.SpatialSoftmax,
         kwargs={'data_format': 'channels_first'},
         input_shape=input_shape,

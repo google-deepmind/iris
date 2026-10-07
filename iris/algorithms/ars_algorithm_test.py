@@ -41,12 +41,12 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
     suggestions = algo.get_param_suggestions()
     self.assertLen(suggestions, 6)
     eval_results = [
-        worker_util.EvaluationResult(np.array([10., 11.]), 10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.empty(0), 0),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.array([10., 11.]), 10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.array([10., 9.]), -10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.array([10., 9.]), -10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.empty(0), 0),  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(np.array([10.0, 11.0]), 10),
+        worker_util.EvaluationResult(np.empty(0), 0),
+        worker_util.EvaluationResult(np.array([10.0, 11.0]), 10),
+        worker_util.EvaluationResult(np.array([10.0, 9.0]), -10),
+        worker_util.EvaluationResult(np.array([10.0, 9.0]), -10),
+        worker_util.EvaluationResult(np.empty(0), 0),
     ]
     algo.process_evaluations(eval_results)
     np.testing.assert_array_equal(algo._opt_params, np.array([10, 11]))
@@ -63,12 +63,12 @@ class AlgorithmTest(tf.test.TestCase, parameterized.TestCase):
     suggestions = algo.get_param_suggestions()
     self.assertLen(suggestions, 6)
     eval_results = [
-        worker_util.EvaluationResult(np.array([10., 11.]), 10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.empty(0), 0),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.array([10., 11.]), 10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.array([10., 9.]), -10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.array([10., 9.]), -10),  # pytype: disable=wrong-arg-types  # numpy-scalars
-        worker_util.EvaluationResult(np.empty(0), 0),  # pytype: disable=wrong-arg-types  # numpy-scalars
+        worker_util.EvaluationResult(np.array([10.0, 11.0]), 10),
+        worker_util.EvaluationResult(np.empty(0), 0),
+        worker_util.EvaluationResult(np.array([10.0, 11.0]), 10),
+        worker_util.EvaluationResult(np.array([10.0, 9.0]), -10),
+        worker_util.EvaluationResult(np.array([10.0, 9.0]), -10),
+        worker_util.EvaluationResult(np.empty(0), 0),
     ]
     algo.process_evaluations(eval_results)
     np.testing.assert_array_equal(algo._opt_params, np.array([10, 11]))

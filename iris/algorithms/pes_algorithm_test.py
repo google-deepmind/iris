@@ -37,18 +37,24 @@ class AlgorithmTest(parameterized.TestCase):
     init_state = {'init_params': np.array([10., 10.])}
     algo.initialize(init_state)
     eval_results = [
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
-            np.array([10., 11.]), 10, metrics={'current_step': 5}),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
-            np.empty(0), 0, metrics={'current_step': 5}),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
-            np.array([10., 11.]), 10, metrics={'current_step': 5}),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
-            np.array([10., 9.]), -10, metrics={'current_step': 5}),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
-            np.array([10., 9.]), -10, metrics={'current_step': 5}),
-        worker_util.EvaluationResult(  # pytype: disable=wrong-arg-types  # numpy-scalars
-            np.empty(0), 0, metrics={'current_step': 5}),
+        worker_util.EvaluationResult(
+            np.array([10.0, 11.0]), 10, metrics={'current_step': 5}
+        ),
+        worker_util.EvaluationResult(
+            np.empty(0), 0, metrics={'current_step': 5}
+        ),
+        worker_util.EvaluationResult(
+            np.array([10.0, 11.0]), 10, metrics={'current_step': 5}
+        ),
+        worker_util.EvaluationResult(
+            np.array([10.0, 9.0]), -10, metrics={'current_step': 5}
+        ),
+        worker_util.EvaluationResult(
+            np.array([10.0, 9.0]), -10, metrics={'current_step': 5}
+        ),
+        worker_util.EvaluationResult(
+            np.empty(0), 0, metrics={'current_step': 5}
+        ),
     ]
     algo.process_evaluations(eval_results)
     np.testing.assert_array_equal(algo._opt_params, np.array([10, 11]))

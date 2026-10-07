@@ -207,8 +207,8 @@ class RepresentationLearner(object):
     else:
       self.policy = policy
 
-    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)  # pyrefly: ignore[bad-argument-type]
-    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
+    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)
+    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)
     time_step_spec = ts.time_step_spec(observation_spec=obs_spec)
     policy_step_spec = policy_step.PolicyStep(action=action_spec)  # pyrefly: ignore[missing-argument]
     collect_data_spec = trajectory.from_transition(
@@ -325,14 +325,14 @@ class RepresentationLearner(object):
   @tf.function
   def rollout(self, obs, actions):
     """Latent rollout."""
-    s, _ = self.policy.h_model(obs)  # pyrefly: ignore[not-callable]
+    s, _ = self.policy.h_model(obs)
     outputs = []
     for i in range(self._rollout_length):
-      p, v = self.policy.f_model(s)  # pyrefly: ignore[not-callable]
-      u_next, s_next = self.policy.g_model([s, actions[:, i, ...]])  # pyrefly: ignore[not-callable]
+      p, v = self.policy.f_model(s)
+      u_next, s_next = self.policy.g_model([s, actions[:, i, ...]])
       outputs.append((p, v, u_next, s))
       s = s_next
-    p, v = self.policy.f_model(s)  # pyrefly: ignore[not-callable]
+    p, v = self.policy.f_model(s)
     outputs.append((p, v, None, s))
     return outputs
 
@@ -368,11 +368,11 @@ class RepresentationLearner(object):
       # Latent state (from visual + other observations) for the first time step
       hx = latent_traj[0][-1]
       # Latent state (from visual observations) for the last time step
-      _, hy_vision = self.policy.h_model(obs_k)  # pyrefly: ignore[not-callable]
+      _, hy_vision = self.policy.h_model(obs_k)
       # A trick from https://arxiv.org/abs/2011.10566
       hy_vision = tf.stop_gradient(hy_vision)
-      zx = self.policy.px_model(hx)  # pyrefly: ignore[not-callable]
-      zy = self.policy.py_model(hy_vision)  # pyrefly: ignore[not-callable]
+      zx = self.policy.px_model(hx)
+      zy = self.policy.py_model(hy_vision)
       iyz, _, _ = infonce(zx, zy, temperature=0.1)
       loss_pi = -iyz
 
@@ -455,7 +455,7 @@ def flatten_nested(space, x):
   """Flatten nested."""
   if isinstance(space, spaces.Box):
     x = np.asarray(x, dtype=np.float32)
-    inner_dims = list(space.shape)  # pyrefly: ignore[bad-argument-type]
+    inner_dims = list(space.shape)
     outer_dims = list(x.shape)[: -len(inner_dims)]
     x = np.reshape(x, outer_dims + [np.prod(inner_dims)])
     return x
