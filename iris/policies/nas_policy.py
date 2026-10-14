@@ -79,10 +79,10 @@ class NumpyTopologyPolicy(PyGlovePolicy):
   def act(
       self, ob: Union[np.ndarray, Dict[str, np.ndarray]]
   ) -> Union[np.ndarray, Dict[str, np.ndarray]]:
-    ob = utils.flatten(self._ob_space, ob)
+    ob = utils.flatten(self._ob_space, ob)  # pyrefly: ignore[bad-assignment]
     values = [0.0] * self._total_nb_nodes
     for i in range(self._ob_dim):
-      values[i] = ob[i]  # pyrefly: ignore[bad-index]
+      values[i] = ob[i]  # pyrefly: ignore[bad-index, unsupported-operation]
     for i in range(self._total_nb_nodes):
       if (i > self._ob_dim) and (i < self._total_nb_nodes - self._ac_dim):
         values[i] = np.tanh(values[i] + self._biases[i])

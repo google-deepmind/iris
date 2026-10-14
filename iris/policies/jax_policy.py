@@ -87,7 +87,7 @@ class JaxPolicy(base_policy.BasePolicy):
     Returns:
       The action in reinforcement learning.
     """
-    ob = utils.flatten(self._ob_space, ob)
+    ob = utils.flatten(self._ob_space, ob)  # pyrefly: ignore[bad-assignment]
     action = self.model.apply(
         self._tree_weights,
         [ob],

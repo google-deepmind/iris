@@ -85,9 +85,21 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
 
     if self._step == 0:
       self._policy.reset()
-      if env_seed is not None:
+      if env_seed is not None and hasattr(self._env, "seed"):
         self._env.seed(env_seed)
-      self._obs = self._env.reset()
+      reset_res = (
+          self._env.reset(seed=env_seed)
+          if env_seed is not None and not hasattr(self._env, "seed")
+          else self._env.reset()
+      )
+      if (
+          isinstance(reset_res, tuple)
+          and len(reset_res) == 2
+          and isinstance(reset_res[1], dict)
+      ):
+        self._obs = reset_res[0]
+      else:
+        self._obs = reset_res
 
     if partial_rollout_length is None:
       partial_rollout_length = self._rollout_length
@@ -96,7 +108,12 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
           self._obs, update_obs_norm_buffer
       )
       action = self._action_denormalizer(self._policy.act(normalized_obs))
-      next_obs, r, done, info = self._env.step(action)
+      step_res = self._env.step(action)
+      if len(step_res) == 5:
+        next_obs, r, terminated, truncated, info = step_res
+        done = terminated or truncated
+      else:
+        next_obs, r, done, info = step_res
 
       for rkey, rval in r.items():
         if rkey not in reward_dict:
@@ -124,7 +141,11 @@ class MultiAgentRLWorker(rl_worker.RLWorker):
       self._obs = next_obs
 
       if record_video and video is not None:
-        video.add_frame(self._env.render(mode="rgb_array"))
+        try:
+          frame = self._env.render(mode="rgb_array")
+        except TypeError:
+          frame = self._env.render()
+        video.add_frame(frame)
       if enable_logging:
         logging.info("Step: %d, Reward: %s, Done: %d", self._step, r, done)
         if mdict:
