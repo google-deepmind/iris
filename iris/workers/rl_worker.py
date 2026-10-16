@@ -124,13 +124,13 @@ class RLWorker(worker.Worker):
 
     if not isinstance(observation_normalizer, normalizer.Normalizer):
       self._observation_normalizer = observation_normalizer(
-          self._env.observation_space
+          self._env.observation_space  # pyrefly: ignore[bad-argument-type]
       )
     else:
       self._observation_normalizer = observation_normalizer
 
     if not isinstance(action_denormalizer, normalizer.Normalizer):
-      self._action_denormalizer = action_denormalizer(self._env.action_space)
+      self._action_denormalizer = action_denormalizer(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
     else:
       self._action_denormalizer = action_denormalizer
 
