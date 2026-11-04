@@ -207,8 +207,8 @@ class RepresentationLearner(object):
     else:
       self.policy = policy
 
-    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)
-    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)
+    obs_spec = gym_wrapper.spec_from_gym_space(self._env.observation_space)  # pyrefly: ignore[bad-argument-type]
+    action_spec = gym_wrapper.spec_from_gym_space(self._env.action_space)  # pyrefly: ignore[bad-argument-type]
     time_step_spec = ts.time_step_spec(observation_spec=obs_spec)
     policy_step_spec = policy_step.PolicyStep(action=action_spec)  # pyrefly: ignore[missing-argument]
     collect_data_spec = trajectory.from_transition(
@@ -455,7 +455,7 @@ def flatten_nested(space, x):
   """Flatten nested."""
   if isinstance(space, spaces.Box):
     x = np.asarray(x, dtype=np.float32)
-    inner_dims = list(space.shape)
+    inner_dims = list(space.shape)  # pyrefly: ignore[bad-argument-type]
     outer_dims = list(x.shape)[: -len(inner_dims)]
     x = np.reshape(x, outer_dims + [np.prod(inner_dims)])
     return x
