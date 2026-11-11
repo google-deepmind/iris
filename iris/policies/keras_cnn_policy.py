@@ -40,7 +40,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     for image_label in self._image_input_labels:
       vision_input_layers.append(
           tf.keras.layers.Input(
-              shape=self._ob_space[image_label].shape,
+              shape=self._ob_space[image_label].shape,  # pyrefly: ignore[bad-index]
               batch_size=1,
               dtype="float32",
               name="vision_input" + image_label,
@@ -49,7 +49,7 @@ class KerasCNNPolicy(keras_policy.KerasPolicy):
     return vision_input_layers
 
   def _create_other_input_layer(self):
-    self._other_ob_space = self._ob_space.spaces.copy()
+    self._other_ob_space = self._ob_space.spaces.copy()  # pyrefly: ignore[missing-attribute]
     for input_label in self._image_input_labels:
       del self._other_ob_space[input_label]
     self._other_ob_space = spaces.Dict(self._other_ob_space)
